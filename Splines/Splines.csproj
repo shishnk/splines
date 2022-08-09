@@ -6,14 +6,15 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
+		<EnablePreviewFeatures>true</EnablePreviewFeatures>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Using Include="System.Windows.Input" />
 		<Using Include="Splines.Infrastructure.Commands.Base" />
-		<Using Include ="System.ComponentModel"/>
-		<Using Include ="System.Runtime.CompilerServices"/>
-		<Using Include ="Splines.ViewsModels.Base"/>
+		<Using Include="System.ComponentModel" />
+		<Using Include="System.Runtime.CompilerServices" />
+		<Using Include="Splines.ViewsModels.Base" />
 		<Folder Include="Models\" />
 	</ItemGroup>
 
