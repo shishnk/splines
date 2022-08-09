@@ -59,7 +59,7 @@ public class Vector<T> where T : INumber<T>
 
         for (int i = 0; i < a.Length; i++)
         {
-            result._storage[i] = a._storage[i] - b._storage[i];
+            result[i] = a[i] - b[i];
         }
 
         return result;
@@ -70,7 +70,6 @@ public class Vector<T> where T : INumber<T>
         for (int i = 0; i < source.Length; i++)
         {
             destination[i] = source[i];
-
         }
     }
 }
