@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<UseWPF>true</UseWPF>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Using Include="System.Windows.Input" />
+		<Using Include="Splines.Infrastructure.Commands.Base" />
+		<Using Include ="System.ComponentModel"/>
+		<Using Include ="System.Runtime.CompilerServices"/>
+		<Using Include ="Splines.ViewsModels.Base"/>
+		<Folder Include="Models\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
+	</ItemGroup>
+
+</Project>
