@@ -24,7 +24,9 @@ public class Matrix
         for (int i = 0; i < Size; i++)
         {
             for (int j = 0; j < Size; j++)
+            {
                 sw.Write($"{_storage[i, j]:0.000} \t\t");
+            }
 
             sw.WriteLine();
         }
@@ -42,14 +44,18 @@ public class Matrix
                 if (i < j)
                 {
                     for (int k = 0; k < i; k++)
+                    {
                         sumu += _storage[i, k] * _storage[k, j];
+                    }
 
                     _storage[i, j] = (_storage[i, j] - sumu) / _storage[i, i];
                 }
                 else
                 {
                     for (int k = 0; k < j; k++)
+                    {
                         suml += _storage[i, k] * _storage[k, j];
+                    }
 
                     _storage[i, j] -= suml;
                 }
