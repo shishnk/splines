@@ -1,4 +1,4 @@
-namespace SplinesConsoleVersion;
+namespace Splines.Models.Spline;
 
 public readonly record struct Point(double X, double Value)
 {

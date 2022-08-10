@@ -1,4 +1,4 @@
-namespace SplinesConsoleVersion;
+namespace Splines.Models.Spline;
 
 public class QuadratureNode<T> where T : notnull
 {

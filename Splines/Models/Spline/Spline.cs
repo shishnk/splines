@@ -1,4 +1,4 @@
-namespace SplinesConsoleVersion;
+namespace Splines.Models.Spline;
 
 public class Spline
 {
@@ -39,7 +39,7 @@ public class Spline
 
     private void Init()
     {
-        _matrix = new((_elements.Length * 2) + 2);
+        _matrix = new(_elements.Length * 2 + 2);
         _vector = new(_matrix.Size);
         _result = new();
 
@@ -77,16 +77,16 @@ public class Spline
 
                 for (int i = 0; i < _basis.Length; i++)
                 {
-                    _vector[(2 * ielem) + i] += _points[ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
+                    _vector[2 * ielem + i] += _points[ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
 
                     for (int j = 0; j < _basis.Length; j++)
                     {
-                        _matrix[(2 * ielem) + i, (2 * ielem) + j] +=
-                            (_basis[i](x, _elements[ielem].Lenght) * _basis[j](x, _elements[ielem].Lenght)) +
-                            (_parameters.Alpha * Integration.GaussOrder5(_dBasis[i].Invoke, _dBasis[j].Invoke,
-                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder)) +
-                            (_parameters.Beta * Integration.GaussOrder5(_ddBasis[i].Invoke, _ddBasis[j].Invoke,
-                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder));
+                        _matrix[2 * ielem + i, 2 * ielem + j] +=
+                            _basis[i](x, _elements[ielem].Lenght) * _basis[j](x, _elements[ielem].Lenght) +
+                            _parameters.Alpha * Integration.GaussOrder5(_dBasis[i].Invoke, _dBasis[j].Invoke,
+                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder) +
+                            _parameters.Beta * Integration.GaussOrder5(_ddBasis[i].Invoke, _ddBasis[j].Invoke,
+                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder);
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class Spline
             {
                 double x = (changedPoint.X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
 
-                sum += _basis.Select((t, i) => _vector[(2 * ielem) + i] * t(x, _elements[ielem].Lenght)).Sum();
+                sum += _basis.Select((t, i) => _vector[2 * ielem + i] * t(x, _elements[ielem].Lenght)).Sum();
                 _result.Add(changedPoint with { Value = sum });
 
                 changedPoint += (0.2, 0.0);

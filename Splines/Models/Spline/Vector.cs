@@ -1,4 +1,4 @@
-namespace SplinesConsoleVersion;
+namespace Splines.Models.Spline;
 
 public class Vector<T> where T : INumber<T>
 {
