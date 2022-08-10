@@ -17,10 +17,14 @@
 		<Using Include="System.ComponentModel" />
 		<Using Include="System.Runtime.CompilerServices" />
 		<Using Include="Splines.ViewsModels.Base" />
+		<Using Include="System.Collections.Immutable" />
+		<Using Include="Newtonsoft.Json" />
+		<Using Include="System.IO" />
 		<Folder Include="Models\" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
 	</ItemGroup>
 
