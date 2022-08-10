@@ -1,37 +1,12 @@
-namespace Splines.Models.Spline;
+namespace SplinesConsoleVersion;
 
-public class Integration
+public static class Integration
 {
-    private readonly double[] _points;
-    private readonly double[] _weights;
-
-    public Integration()
+    public static double GaussOrder5(Func<double, double, double> psi1, Func<double, double, double> psi2, double a, double b)
     {
-        _points = new double[3];
-        _weights = new double[3];
-
-        _points[0] = 0.0;
-        _points[1] = Math.Sqrt(3.0 / 5);
-        _points[2] = -Math.Sqrt(3.0 / 5);
-
-        _weights[0] = 8.0 / 9;
-        _weights[1] = 5.0 / 9;
-        _weights[2] = 5.0 / 9;
-    }
-
-    public double GaussOrder5(Func<double, double, double> fstPsi, Func<double, double, double> sndPsi, double x1, double x2)
-    {
-        double h = 0.0;
-        double result = 0.0;
-
-        for (int i = 0; i < 3; i++)
-        {
-            double qi = _weights[i];
-            h = Math.Abs(x2 - x1);
-            double pi = (x1 + x2 + _points[i] * h) / 2.0;
-
-            result += qi * fstPsi(pi, h) * sndPsi(pi, h);
-        }
+        var quadratures = Quadratures.GaussOrder5();
+        double h = Math.Abs(b - a);
+        double result = quadratures.Sum(q => q.Weight * psi1((a + b + q.Node * h) / 2.0, h) * psi2((a + b + q.Node * h) / 2.0, h));
 
         return result * h / 2.0;
     }

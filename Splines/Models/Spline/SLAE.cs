@@ -1,28 +1,31 @@
-namespace Splines.Models.Spline;
+namespace SplinesConsoleVersion;
 
 public static class SLAE
 {
-    public static Vector<double> Compute(Matrix matrix, Vector<double> f)
+    public static Vector<T> Compute<T>(Matrix matrix, Vector<T> f)
+        where T : INumber<T>
     {
-        Vector<double> x = new(f.Length);
-        Vector<double>.Copy(f, x);
+        Vector<T> x = new(f.Length);
+        Vector<T>.Copy(f, x);
 
         for (int i = 0; i < f.Length; i++)
         {
-            double sum = 0;
+            T sum = T.Zero;
 
             for (int k = 0; k < i; k++)
-                sum += matrix[i, k] * x[k];
+                sum += T.Create(matrix[i, k]) * x[k];
 
-            x[i] = (f[i] - sum) / matrix[i, i];
+            x[i] = (f[i] - sum) / T.Create(matrix[i, i]);
         }
 
         for (int i = x.Length - 1; i >= 0; i--)
         {
-            double sum = 0;
+            T sum = T.Zero;
 
             for (int k = i + 1; k < x.Length; k++)
-                sum += matrix[i, k] * x[k];
+            {
+                sum += T.Create(matrix[i, k]) * x[k];
+            }
 
             x[i] -= sum;
         }

@@ -1,120 +1,119 @@
-using System.IO;
-
-namespace Splines.Models.Spline;
+namespace SplinesConsoleVersion;
 
 public class Spline
 {
-    public delegate double Basis(double x, double h);
-    private readonly Basis[] _basis, _dBasis, _ddBasis;
-    private readonly FiniteElement[] _elements;
-    private readonly Point[] _points;
-    private Matrix _matrix;
-    private Vector<double> _vector;
-    private List<Point> _result;
-    private Integration _integration;
-    private double _alpha;
-    private double _beta;
-
-    public Spline(string pathElements, string pathPoints, string pathParameters)
+    public class SplineBuilder
     {
-        try
-        {
-            using (var sr = new StreamReader(pathElements))
-            {
-                _elements = sr.ReadToEnd().Split("\n").Select(stringElements => stringElements.Split())
-                .Select(element => new FiniteElement(double.Parse(element[0]), double.Parse(element[1]))).ToArray();
-            }
+        private readonly Spline _spline = new();
 
-            using (var sr = new StreamReader(pathPoints))
-            {
-                _points = sr.ReadToEnd().Split("\n").Select(stringPoints => stringPoints.Split())
-                .Select(point => new Point(double.Parse(point[0]), double.Parse(point[1]))).ToArray();
-            }
-
-            using (var sr = new StreamReader(pathParameters))
-            {
-                _alpha = double.Parse(sr.ReadLine());
-                _beta = double.Parse(sr.ReadLine());
-            }
-        }
-        catch (Exception ex)
+        public SplineBuilder SetParameters((double Alpha, double Beta) parameters)
         {
-            Console.WriteLine(ex.Message);
+            _spline._parameters = parameters;
+            return this;
         }
 
-        _matrix = new(_elements.Length * 2 + 2);
+        public SplineBuilder SetPoints(Point[] points)
+        {
+            _spline._points = points;
+            return this;
+        }
+
+        public SplineBuilder SetElements(FiniteElement[] elements)
+        {
+            _spline._elements = elements;
+            return this;
+        }
+
+        public static implicit operator Spline(SplineBuilder builder)
+            => builder._spline;
+    }
+
+    private delegate double Basis(double x, double h);
+    private Basis[] _basis = default!, _dBasis = default!, _ddBasis = default!;
+    private FiniteElement[] _elements = default!;
+    private Point[] _points = default!;
+    private Matrix _matrix = default!;
+    private Vector<double> _vector = default!;
+    private List<Point> _result = default!;
+    private (double Alpha, double Beta) _parameters;
+
+    private void Init()
+    {
+        _matrix = new((_elements.Length * 2) + 2);
         _vector = new(_matrix.Size);
-        _integration = new();
         _result = new();
 
-        _basis = new Basis[4]{HermiteBasis.Psi1, HermiteBasis.Psi2,
+        _basis = new Basis[]{HermiteBasis.Psi1, HermiteBasis.Psi2,
                                          HermiteBasis.Psi3, HermiteBasis.Psi4};
-        _dBasis = new Basis[4]{HermiteBasis.dPsi1, HermiteBasis.dPsi2,
-                                          HermiteBasis.dPsi3, HermiteBasis.dPsi4};
-        _ddBasis = new Basis[4]{HermiteBasis.ddPsi1, HermiteBasis.ddPsi2,
-                                           HermiteBasis.ddPsi3, HermiteBasis.ddPsi4};
+        _dBasis = new Basis[]{HermiteBasis.DPsi1, HermiteBasis.DPsi2,
+                                          HermiteBasis.DPsi3, HermiteBasis.DPsi4};
+        _ddBasis = new Basis[]{HermiteBasis.DdPsi1, HermiteBasis.DdPsi2,
+                                           HermiteBasis.DdPsi3, HermiteBasis.DdPsi4};
     }
 
     public void Compute()
     {
-        Assembly();
-        _matrix.PrintDense("_matrix.txt");
+        Init();
+        AssemblyMatrix();
+        //_matrix.PrintDense("_matrix.txt");
         _matrix.LU();
         _vector = SLAE.Compute(_matrix, _vector);
-        ValueAtPoint();
+        ValuesAtPoints();
     }
 
-    private void Assembly()
+    private void AssemblyMatrix()
     {
         int[] checker = new int[_points.Length];
         checker.Fill(1);
 
-        double x;
-
         for (int ielem = 0; ielem < _elements.Length; ielem++)
+        {
             for (int ipoint = 0; ipoint < _points.Length; ipoint++)
-                if (_elements[ielem].Contain(_points[ipoint]) && checker[ipoint] == 1)
+            {
+                if (!_elements[ielem].Contain(_points[ipoint]) || checker[ipoint] != 1) continue;
+
+                checker[ipoint] = -1;
+                double x = (_points[ipoint].X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
+
+                for (int i = 0; i < _basis.Length; i++)
                 {
-                    checker[ipoint] = -1;
-                    x = (_points[ipoint].X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght; // $\xi(x) = \dfrac{x - x_i}{h_i}$
+                    _vector[(2 * ielem) + i] += _points[ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
 
-                    for (int i = 0; i < _basis.Length; i++)
+                    for (int j = 0; j < _basis.Length; j++)
                     {
-                        _vector[2 * ielem + i] += _points[ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
-
-                        for (int j = 0; j < _basis.Length; j++)
-                            _matrix[2 * ielem + i, 2 * ielem + j] +=
-                            _basis[i](x, _elements[ielem].Lenght) * _basis[j](x, _elements[ielem].Lenght) +
-                            _alpha * _integration.GaussOrder5(_dBasis[i].Invoke, _dBasis[j].Invoke,
-                            _elements[ielem].LeftBorder, _elements[ielem].RightBorder) +
-                            _beta * _integration.GaussOrder5(_ddBasis[i].Invoke, _ddBasis[j].Invoke,
-                            _elements[ielem].LeftBorder, _elements[ielem].RightBorder);
+                        _matrix[(2 * ielem) + i, (2 * ielem) + j] +=
+                            (_basis[i](x, _elements[ielem].Lenght) * _basis[j](x, _elements[ielem].Lenght)) +
+                            (_parameters.Alpha * Integration.GaussOrder5(_dBasis[i].Invoke, _dBasis[j].Invoke,
+                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder)) +
+                            (_parameters.Beta * Integration.GaussOrder5(_ddBasis[i].Invoke, _ddBasis[j].Invoke,
+                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder));
                     }
                 }
+            }
+        }
     }
 
-    private void ValueAtPoint()
+    private void ValuesAtPoints()
     {
-        double x;
-        double sum = 0;
-        Point changed;
+        double sum = 0.0;
 
         for (int ielem = 0; ielem < _elements.Length; ielem++)
         {
-            changed = new(_elements[ielem].LeftBorder, 0);
+            Point changedPoint = new(_elements[ielem].LeftBorder, 0.0);
 
             do
             {
-                x = (changed.X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
+                double x = (changedPoint.X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
 
-                for (int i = 0; i < _basis.Length; i++)
-                    sum += _vector[2 * ielem + i] * _basis[i](x, _elements[ielem].Lenght);
+                sum += _basis.Select((t, i) => _vector[(2 * ielem) + i] * t(x, _elements[ielem].Lenght)).Sum();
+                _result.Add(changedPoint with { Value = sum });
 
-                _result.Add(new(changed.X, sum));
-                changed += (0.2, 0);
-                sum = 0;
-
-            } while (_elements[ielem].Contain(changed));
+                changedPoint += (0.2, 0.0);
+                sum = 0.0;
+            } while (_elements[ielem].Contain(changedPoint));
         }
     }
+
+    public static SplineBuilder CreateBuilder()
+        => new();
 }

@@ -7,9 +7,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<EnablePreviewFeatures>true</EnablePreviewFeatures>
+		<StartupObject>Splines.Program</StartupObject>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Folder Include="Models\Spline\" />
 		<Using Include="System.Windows.Input" />
 		<Using Include="Splines.Infrastructure.Commands.Base" />
 		<Using Include="System.ComponentModel" />
