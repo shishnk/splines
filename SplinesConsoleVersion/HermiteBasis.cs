@@ -26,15 +26,15 @@ public static class HermiteBasis
     public static double DPsi4(double x, double h)
     => -2 * x + 3 * x * x; // $-2\xi + 3\xi^2$
 
-    public static double DDPsi1(double x, double h)
+    public static double DdPsi1(double x, double h)
     => -6 * (1 - 2 * x) / (h * h); // $\dfrac{-6 \cdot (1 - 2\xi)}{h_i^2}$
 
-    public static double DDPsi2(double x, double h)
+    public static double DdPsi2(double x, double h)
     => (-4 + 6 * x) / h; // $\dfrac{-4 + 6\xi}{h_i}$
 
-    public static double DDPsi3(double x, double h)
+    public static double DdPsi3(double x, double h)
     => 6 * (1 - 2 * x) / (h * h); // $\dfrac{6 \cdot (1 - 2\xi)}{h_i^2}$
 
-    public static double DDPsi4(double x, double h)
+    public static double DdPsi4(double x, double h)
     => (-2 + 6 * x) / h; // $\dfrac{-2 + 6\xi}{h_i}$
 }
