@@ -20,10 +20,16 @@
 		<Using Include="System.Collections.Immutable" />
 		<Using Include="Newtonsoft.Json" />
 		<Using Include="System.IO" />
+		<Using Include="Microsoft.Extensions.DependencyInjection" />
+		<Using Include="Splines.ViewsModels" />
+		<Using Include="Microsoft.Extensions.Hosting" />
+		<Using Include="System.Windows" />
+		<Using Include="Splines.Services" />
 		<Folder Include="Models\" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
 	</ItemGroup>
