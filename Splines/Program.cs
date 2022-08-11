@@ -9,4 +9,7 @@ public static class Program
         app.InitializeComponent();
         app.Run();
     }
+
+    public static IHostBuilder CreateHostBuilder(string[] args)
+        => Host.CreateDefaultBuilder(args).ConfigureServices(App.ConfigureServices);
 }
