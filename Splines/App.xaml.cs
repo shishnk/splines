@@ -5,12 +5,12 @@
 /// </summary>
 public partial class App
 {
-    private static IHost _host;
+    private static IHost? _host;
     public static IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
     public static IServiceProvider Services => Host.Services;
 
-    public static void ConfigureServices(HostBuilderContext host, IServiceCollection services)
-        => services.AddViewModels();
+    public static void ConfigureServices(IServiceCollection services)
+        => services.AddViewModelsAndServices();
 
     protected override async void OnStartup(StartupEventArgs e)
     {

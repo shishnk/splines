@@ -25,10 +25,16 @@
 		<Using Include="Microsoft.Extensions.Hosting" />
 		<Using Include="System.Windows" />
 		<Using Include="Splines.Services" />
+		<Using Include="Splines.Models.Spline" />
+		<Using Include="System.Collections.ObjectModel" />
+		<Using Include="Splines.Infrastructure.Commands" />
+		<Using Include="System.Windows.Controls" />
+		<Using Include="System.Windows.Data" />
 		<Folder Include="Models\" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FontAwesome5" Version="2.1.11" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
