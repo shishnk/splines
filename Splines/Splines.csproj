@@ -30,6 +30,7 @@
 		<Using Include="Splines.Infrastructure.Commands" />
 		<Using Include="System.Windows.Controls" />
 		<Using Include="System.Windows.Data" />
+		<Using Include="System.Globalization;" />
 		<Folder Include="Models\" />
 	</ItemGroup>
 
