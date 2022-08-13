@@ -1,5 +1,6 @@
 ﻿using OxyPlot;
 using OxyPlot.Series;
+using System.Text.RegularExpressions;
 
 namespace Splines.ViewsModels;
 
@@ -13,19 +14,7 @@ public class MainViewModel : ViewModel
     public ObservableCollection<Point> Points { get; }
     public ObservableCollection<FiniteElement> Elements { get; }
     public ICollectionView SelectedElementPoints => _selectedElementPoints.View;
-
-    //public FiniteElement SelectedElement
-    //{
-    //    get => _selectedElement;
-    //    set
-    //    {
-    //        if(!Set(ref _selectedElement, value)) return;
-
-    //        _selectedElementPoints.Source = value?.Points;
-    //        OnPropertyChanged(nameof(SelectedGroupStudents));
-    //    }
-    //}
-
+    public FiniteElement SelectedElement { get => _selectedElement; set => Set(ref _selectedElement, value); }
     public double Alpha { get => _alpha; set => Set(ref _alpha, value); }
     public double Beta { get => _alpha; set => Set(ref _beta, value); }
     public ICommand CreateElement { get; }
@@ -67,7 +56,9 @@ public class MainViewModel : ViewModel
     {
         if (parameter is not FiniteElement element) return;
 
+        int index = Elements.IndexOf(element);
         Elements.Remove(element);
+        SelectedElement = index > 0 ? Elements[index - 1] : Elements.FirstOrDefault();
     }
 
     private bool CanRemoveElementCommandExecute(object parameter) =>
