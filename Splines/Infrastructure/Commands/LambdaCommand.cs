@@ -12,7 +12,7 @@ public class LambdaCommand : Command
     }
 
     public override bool CanExecute(object? parameter)
-        => parameter != null && (_canExecute?.Invoke(parameter) ?? true);
+        => _canExecute?.Invoke(parameter!) ?? true;
 
     public override void Execute(object? parameter)
         => _execute(parameter!);

@@ -12,12 +12,6 @@ public class Spline : IDataService
             return this;
         }
 
-        public SplineBuilder SetPoints(Point[] points)
-        {
-            _spline._points = points;
-            return this;
-        }
-
         public SplineBuilder SetElements(FiniteElement[] elements)
         {
             _spline._elements = elements;
@@ -31,7 +25,6 @@ public class Spline : IDataService
     private delegate double Basis(double x, double h);
     private Basis[] _basis = default!, _dBasis = default!, _ddBasis = default!;
     private FiniteElement[] _elements = default!;
-    private Point[] _points = default!;
     private Matrix _matrix = default!;
     private Vector<double> _vector = default!;
     private List<Point> _result = default!;
@@ -65,30 +58,30 @@ public class Spline : IDataService
 
     private void AssemblyMatrix()
     {
-        int[] checker = new int[_points.Length];
+        int[] checker = new int[_elements.Select(element => element.Points).Count()];
         checker.Fill(1);
 
         for (int ielem = 0; ielem < _elements.Length; ielem++)
         {
-            for (int ipoint = 0; ipoint < _points.Length; ipoint++)
+            for (int ipoint = 0; ipoint < _elements[ielem].Points!.Count(); ipoint++)
             {
-                if (!_elements[ielem].Contain(_points[ipoint]) || checker[ipoint] != 1) continue;
+                if (!_elements[ielem].Contain(_elements[ielem].PointsAsArray![ipoint]) || checker[ipoint] != 1) continue;
 
                 checker[ipoint] = -1;
-                double x = (_points[ipoint].X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
+                double x = (_elements[ielem].PointsAsArray![ipoint].X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
 
                 for (int i = 0; i < _basis.Length; i++)
                 {
-                    _vector[(2 * ielem) + i] += _points[ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
+                    _vector[2 * ielem + i] += _elements[ielem].PointsAsArray![ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
 
                     for (int j = 0; j < _basis.Length; j++)
                     {
-                        _matrix[(2 * ielem) + i, (2 * ielem) + j] +=
-                            (_basis[i](x, _elements[ielem].Lenght) * _basis[j](x, _elements[ielem].Lenght)) +
-                            (_parameters.Alpha * Integration.GaussOrder5(_dBasis[i].Invoke, _dBasis[j].Invoke,
-                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder)) +
-                            (_parameters.Beta * Integration.GaussOrder5(_ddBasis[i].Invoke, _ddBasis[j].Invoke,
-                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder));
+                        _matrix[2 * ielem + i, 2 * ielem + j] +=
+                            _basis[i](x, _elements[ielem].Lenght) * _basis[j](x, _elements[ielem].Lenght) +
+                            _parameters.Alpha * Integration.GaussOrder5(_dBasis[i].Invoke, _dBasis[j].Invoke,
+                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder) +
+                            _parameters.Beta * Integration.GaussOrder5(_ddBasis[i].Invoke, _ddBasis[j].Invoke,
+                                _elements[ielem].LeftBorder, _elements[ielem].RightBorder);
                     }
                 }
             }

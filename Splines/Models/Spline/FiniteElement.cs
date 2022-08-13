@@ -1,6 +1,6 @@
 namespace Splines.Models.Spline;
 
-public readonly record struct FiniteElement
+public class FiniteElement
 {
     [JsonProperty("Left Border")]
     public double LeftBorder { get; }
@@ -10,6 +10,8 @@ public readonly record struct FiniteElement
 
     [JsonIgnore]
     public double Lenght { get; }
+
+    public ICollection<Point>? Points { get; set; }
 
     [JsonConstructor]
     public FiniteElement(double leftBorder, double rightBorder)
@@ -42,4 +44,6 @@ public readonly record struct FiniteElement
 
     public override string ToString()
         => $"Element interval is [{LeftBorder}, {RightBorder}]";
+
+    public Point[]? PointsAsArray => Points?.ToArray();
 }

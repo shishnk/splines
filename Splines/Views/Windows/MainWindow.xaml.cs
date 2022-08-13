@@ -9,13 +9,14 @@ public partial class MainWindow
 
     private void ElementsCollectionOnFilter(object sender, FilterEventArgs e)
     {
-        if (e.Item is not FiniteElement elements) return;
+        if (e.Item is not FiniteElement element) return;
 
         var filterText = ElementFilterText.Text;
 
         if (filterText.Length == 0) return;
 
-        if (elements.ToString().Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
+        if (new string($"Element [{element.LeftBorder}; {element.RightBorder}]").Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
+        if (new string($"Element [{element.LeftBorder};{element.RightBorder}]").Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
 
         e.Accepted = false;
     }

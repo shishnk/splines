@@ -85,7 +85,7 @@
                                         CommandParameter="{Binding SelectedElement}"
                                         Content="Удалить" />
                                 </UniformGrid>
-                                <ListBox ItemsSource="{Binding Source={StaticResource ElementsCollection}}">
+                                <ListBox ItemsSource="{Binding Source={StaticResource ElementsCollection}}" SelectedItem="{Binding SelectedElement}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate DataType="spline:FiniteElement">
                                             <DataTemplate.Resources>
@@ -95,14 +95,13 @@
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
-
                             </DockPanel>
                         </GroupBox>
                         <GroupBox Grid.Column="1" Header="Точки">
                             <DataGrid
                                 HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" CanUserAddRows="True" CanUserResizeColumns="False"
                                 CanUserResizeRows="False" ColumnWidth="90" FrozenColumnCount="2" HorizontalScrollBarVisibility="Disabled"
-                                ItemsSource="{Binding Points}"
+                                ItemsSource="{Binding SelectedElementPoints}"
                                 RowHeight="17" VerticalScrollBarVisibility="Visible" />
                         </GroupBox>
                     </Grid>

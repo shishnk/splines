@@ -1,20 +1,28 @@
 ﻿using OxyPlot;
 using OxyPlot.Series;
-using System.Text.RegularExpressions;
 
 namespace Splines.ViewsModels;
 
 public class MainViewModel : ViewModel
 {
     private IDataService _dataService;
-    private FiniteElement _selectedElement;
-    private CollectionViewSource _selectedElementPoints = new();
+    private FiniteElement? _selectedElement;
+    private readonly CollectionViewSource _selectedElementPoints = new();
     private double _alpha = 1E-07;
     private double _beta = 1E-07;
-    public ObservableCollection<Point> Points { get; }
     public ObservableCollection<FiniteElement> Elements { get; }
     public ICollectionView SelectedElementPoints => _selectedElementPoints.View;
-    public FiniteElement SelectedElement { get => _selectedElement; set => Set(ref _selectedElement, value); }
+    public FiniteElement? SelectedElement
+    {
+        get => _selectedElement;
+        set
+        {
+            if (!Set(ref _selectedElement, value)) return;
+
+            _selectedElementPoints.Source = value?.Points;
+            OnPropertyChanged(nameof(SelectedElementPoints));
+        }
+    }
     public double Alpha { get => _alpha; set => Set(ref _alpha, value); }
     public double Beta { get => _alpha; set => Set(ref _beta, value); }
     public ICommand CreateElement { get; }
@@ -25,11 +33,11 @@ public class MainViewModel : ViewModel
     {
         _dataService = dataService;
 
-        var points = Enumerable.Range(0, 100).Select(i => new Point(i, i));
-
-        Points = new(points);
-
-        var elements = Enumerable.Range(0, 100).Select(i => new FiniteElement(i, i));
+        var points = Enumerable.Range(0, 10).Select(i => new Point(i, i * i));
+        var elements = Enumerable.Range(0, 10).Select(i => new FiniteElement(i, i + 1)
+        {
+            Points = new ObservableCollection<Point>(points)
+        });
 
         Elements = new(elements);
 
@@ -46,7 +54,8 @@ public class MainViewModel : ViewModel
 
     private void OnCreateElementCommandExecuted(object parameter)
     {
-        FiniteElement newElement = new(1.0, 2.0);
+        var points = Enumerable.Range(1, 10).Select(i => new Point(i, i * 3));
+        FiniteElement newElement = new(1.0, 2.0) { Points = new ObservableCollection<Point>(points) };
         Elements.Add(newElement);
     }
 
