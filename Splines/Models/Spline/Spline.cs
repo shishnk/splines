@@ -101,7 +101,7 @@ public class Spline : IDataService
                 double x = (changedPoint.X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
 
                 sum += _basis.Select((t, i) => _vector[(2 * ielem) + i] * t(x, _elements[ielem].Lenght)).Sum();
-                _result.Add(changedPoint with { Value = sum });
+                _result.Add(new(changedPoint.X, sum));
 
                 changedPoint += (0.2, 0.0);
                 sum = 0.0;

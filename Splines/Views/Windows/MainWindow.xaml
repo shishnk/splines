@@ -1,7 +1,8 @@
 ﻿<Window
-    x:Class="Splines.Views.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converters="clr-namespace:Splines.Infrastructure.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:fa5="http://schemas.fontawesome.com/icons/" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:oxy="http://oxyplot.org/wpf"
-    xmlns:spline="clr-namespace:Splines.Models.Spline" Title="Splines" Width="800" Height="450"
+    x:Class="Splines.Views.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:converters="clr-namespace:Splines.Infrastructure.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:fa5="http://schemas.fontawesome.com/icons/" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="http://oxyplot.org/wpf" xmlns:spline="clr-namespace:Splines.Models.Spline" xmlns:vm="clr-namespace:Splines.ViewsModels" Title="Splines"
+    Width="800" Height="450"
     DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
     mc:Ignorable="d">
     <DockPanel>
@@ -16,101 +17,137 @@
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width=".45*" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="0.45*" MinWidth="30" />
             </Grid.ColumnDefinitions>
             <GroupBox
-                Grid.Column="0" Background="AliceBlue" Header="График">
+                Name="Graphic" Grid.Column="0" Background="AliceBlue" Header="График">
                 <oxy:PlotView Background="AliceBlue" Model="{Binding Graphic}" />
             </GroupBox>
             <GridSplitter
-                Grid.Column="0" Width="3" Background="Cyan" />
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="70" />
-                    <RowDefinition Height="1.5*" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <GroupBox Grid.Row="0" Header="Параметры">
-                    <DockPanel>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="3,0,0,0" HorizontalAlignment="Left" Text="Alpha" />
-                                <TextBox
-                                    Width="40" Height="20" Margin="3,0,0,30"
-                                    Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}" />
-                            </StackPanel>
-                            <GridSplitter
-                                Grid.Column="0" Width="1.5" Background="LightGreen" IsEnabled="False" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <TextBlock
-                                    Margin="3,0,0,0" HorizontalAlignment="Left" Text="Beta" />
-                                <TextBox
-                                    Width="38" Height="20" Margin="3,0,0,30"
-                                    Text="{Binding Beta, UpdateSourceTrigger=PropertyChanged}" />
-                            </StackPanel>
-                        </Grid>
-                    </DockPanel>
-                </GroupBox>
-                <GroupBox Grid.Row="1" Header="Конечноэлементая сетка">
+                Grid.Column="0" Width="2"
+                Height="{Binding ActualHeight, ElementName=Graphic}" />
+            <Border
+                Grid.Column="1" Padding="5" BorderBrush="LightGray" BorderThickness="1"
+                CornerRadius="4">
+                <Expander
+                    HorizontalAlignment="Stretch" ExpandDirection="Left" FlowDirection="LeftToRight" IsExpanded="False">
                     <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <GroupBox Grid.Column="0" Header="Элементы">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".3*" />
+                            <RowDefinition Height="2*" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <GroupBox Grid.Row="0" Header="Параметры">
                             <DockPanel>
-                                <DockPanel.Resources>
-                                    <CollectionViewSource
-                                        x:Key="ElementsCollection" Filter="ElementsCollectionOnFilter"
-                                        Source="{Binding Elements}" />
-                                </DockPanel.Resources>
-                                <DockPanel DockPanel.Dock="Top">
-                                    <fa5:ImageAwesome
-                                        Height="12" Margin="3,0" Icon="Solid_Search" />
-                                    <TextBox Name="ElementFilterText" TextChanged="OnElementsFilterChanged" />
-                                </DockPanel>
-                                <UniformGrid DockPanel.Dock="Bottom">
-                                    <Button
-                                        Command="{Binding CreateElement}"
-                                        CommandParameter="{Binding SelectedElement}"
-                                        Content="Добавить" />
-                                    <Button
-                                        Command="{Binding DeleteElement}"
-                                        CommandParameter="{Binding SelectedElement}"
-                                        Content="Удалить" />
-                                </UniformGrid>
-                                <ListBox ItemsSource="{Binding Source={StaticResource ElementsCollection}}" SelectedItem="{Binding SelectedElement}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate DataType="spline:FiniteElement">
-                                            <DataTemplate.Resources>
-                                                <converters:FiniteElementToString x:Key="FiniteElementToString" />
-                                            </DataTemplate.Resources>
-                                            <TextBlock Text="{Binding Converter={StaticResource FiniteElementToString}}" />
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Orientation="Horizontal">
+                                        <!--<TextBlock
+                                    Margin="3,0,0,0" HorizontalAlignment="Left" Text="Alpha" />-->
+                                        <Label Content="Alpha" />
+                                        <TextBox
+                                            Width="40" Height="20" Margin="3,0,0,30"
+                                            Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                    <GridSplitter
+                                        Grid.Column="0" Width="1.5" Background="LightGreen" IsEnabled="False" />
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock
+                                            Margin="3,0,0,0" HorizontalAlignment="Left" Text="Beta" />
+                                        <TextBox
+                                            Width="38" Height="20" Margin="3,0,0,30"
+                                            Text="{Binding Beta, UpdateSourceTrigger=PropertyChanged}" />
+                                    </StackPanel>
+                                </Grid>
                             </DockPanel>
                         </GroupBox>
-                        <GroupBox Grid.Column="1" Header="Точки">
-                            <DataGrid
-                                HorizontalAlignment="Left" HorizontalContentAlignment="Stretch" CanUserAddRows="True" CanUserResizeColumns="False"
-                                CanUserResizeRows="False" ColumnWidth="90" FrozenColumnCount="2" HorizontalScrollBarVisibility="Disabled"
-                                ItemsSource="{Binding SelectedElementPoints}"
-                                RowHeight="17" VerticalScrollBarVisibility="Visible" />
+                        <GroupBox Grid.Row="1" Header="Конечноэлементая сетка">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <GroupBox Grid.Column="0" Header="Элементы">
+                                    <DockPanel>
+                                        <DockPanel.Resources>
+                                            <CollectionViewSource
+                                                x:Key="ElementsCollection" Filter="ElementsCollectionOnFilter"
+                                                Source="{Binding Elements}" />
+                                        </DockPanel.Resources>
+                                        <DockPanel DockPanel.Dock="Top">
+                                            <fa5:ImageAwesome
+                                                Height="12" Margin="3,0" Icon="Solid_Search" />
+                                            <TextBox Name="ElementFilterText" TextChanged="OnElementsFilterChanged" />
+                                        </DockPanel>
+                                        <UniformGrid DockPanel.Dock="Bottom" Rows="1">
+                                            <Button
+                                                fa5:Awesome.Content="Solid_Plus"
+                                                Command="{Binding CreateElement}"
+                                                CommandParameter="{Binding SelectedElement}"
+                                                Foreground="Green" />
+                                            <Button
+                                                fa5:Awesome.Content="Solid_Times"
+                                                Command="{Binding DeleteElement}"
+                                                CommandParameter="{Binding SelectedElement}"
+                                                Foreground="DarkRed" />
+                                        </UniformGrid>
+                                        <ListBox ItemsSource="{Binding Source={StaticResource ElementsCollection}}" SelectedItem="{Binding SelectedElement}">
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate DataType="spline:FiniteElement">
+                                                    <DataTemplate.Resources>
+                                                        <converters:FiniteElementToString x:Key="FiniteElementToString" />
+                                                    </DataTemplate.Resources>
+                                                    <TextBlock Text="{Binding Converter={StaticResource FiniteElementToString}}" />
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </DockPanel>
+                                </GroupBox>
+                                <GroupBox Grid.Column="1" Header="Точки">
+                                    <DataGrid
+                                        AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False"
+                                        CanUserSortColumns="False"
+                                        ItemsSource="{Binding SelectedElementPoints}"
+                                        SelectedItem="{Binding SelectedPoint}"
+                                        SelectionMode="Single">
+                                        <DataGrid.Resources>
+                                            <DataTemplate x:Key="Delete">
+                                                <Button
+                                                    Command="{Binding DataContext.DeletePoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="X" />
+                                            </DataTemplate>
+                                            <DataTemplate x:Key="Insert">
+                                                <Button Command="{Binding DataContext.InsertPoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Content="+" />
+                                            </DataTemplate>
+                                        </DataGrid.Resources>
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn
+                                                Width="*"
+                                                Binding="{Binding X}"
+                                                Header="X" />
+                                            <DataGridTextColumn
+                                                Width="*"
+                                                Binding="{Binding Value}"
+                                                Header="F(X)" />
+                                            <DataGridTemplateColumn CellTemplate="{StaticResource Insert}" Header=" " />
+                                            <DataGridTemplateColumn CellTemplate="{StaticResource Delete}" Header=" " />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </GroupBox>
+                            </Grid>
                         </GroupBox>
+                        <DockPanel Grid.Row="2">
+                            <Button
+                                Width="80" Height="25" Content="Построить" />
+                        </DockPanel>
                     </Grid>
-                </GroupBox>
-                <DockPanel Grid.Row="2">
-                    <Button
-                        Width="80" Height="25" Content="Построить" />
-                </DockPanel>
-            </Grid>
+                </Expander>
+            </Border>
         </Grid>
     </DockPanel>
 </Window>

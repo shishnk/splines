@@ -1,7 +1,12 @@
 namespace Splines.Models.Spline;
 
-public readonly record struct Point(double X, double Value)
+public class Point
 {
+    public double X { get; set; }
+    public double Value { get; set; }
+
+    public Point(double x, double value) => (X, Value) = (x, value);
+
     public static Point operator +(Point point, (double X, double Value) v)
          => new(point.X + v.X, point.Value + v.Value);
 
