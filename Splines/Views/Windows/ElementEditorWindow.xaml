@@ -1,0 +1,39 @@
+<Window
+    x:Class="Splines.Views.Windows.ElementEditorWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:commands="clr-namespace:Splines.Infrastructure.Commands"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:Splines.Views.Windows" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Title="Добавление элемента"
+    Width="200" Height="100"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    ResizeMode="NoResize" WindowStyle="ToolWindow" mc:Ignorable="d">
+    <Grid>
+        <StackPanel>
+            <TextBlock
+                HorizontalAlignment="Center" FontSize="9" Text="Создание элемента" />
+            <DockPanel>
+                <TextBlock
+                    Padding="3" HorizontalAlignment="Left" FontSize="6" Text="Левая граница" />
+                <TextBlock
+                    Padding="3" HorizontalAlignment="Right" FontSize="6" Text="Правая граница" />
+            </DockPanel>
+            <UniformGrid Rows="1">
+                <TextBox Text="{Binding LeftBorder}" />
+                <TextBox Text="{Binding RightBorder}" />
+            </UniformGrid>
+            <UniformGrid Rows="1">
+                <Button
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:ElementEditorWindow}}"
+                    Content="OK" IsDefault="True">
+                    <Button.Command>
+                        <commands:CloseDialogWindowCommand DialogResult="True"/>
+                    </Button.Command>
+                </Button>
+                <Button
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=local:ElementEditorWindow}}"
+                    Content="Cancel" IsCancel="False">
+                    <Button.Command>
+                        <commands:CloseDialogWindowCommand DialogResult="False" />
+                    </Button.Command>
+                </Button>
+            </UniformGrid>
+        </StackPanel>
+    </Grid>
+</Window>

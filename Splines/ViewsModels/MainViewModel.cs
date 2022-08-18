@@ -1,5 +1,6 @@
 ﻿using OxyPlot;
 using OxyPlot.Series;
+using Splines.Views.Windows;
 
 namespace Splines.ViewsModels;
 
@@ -13,7 +14,13 @@ public class MainViewModel : ViewModel
     private double _beta = 1E-07;
     public ObservableCollection<FiniteElement> Elements { get; }
     public ICollectionView SelectedElementPoints => _selectedElementPoints.View;
-    public Point? SelectedPoint { get => _selectedPoint; set => Set(ref _selectedPoint, value); }
+
+    public Point? SelectedPoint
+    {
+        get => _selectedPoint;
+        set => Set(ref _selectedPoint, value);
+    }
+
     public FiniteElement? SelectedElement
     {
         get => _selectedElement;
@@ -25,6 +32,7 @@ public class MainViewModel : ViewModel
             OnPropertyChanged(nameof(SelectedElementPoints));
         }
     }
+
     public double Alpha
     {
         get => _alpha;
@@ -70,9 +78,14 @@ public class MainViewModel : ViewModel
 
     private void OnCreateElementCommandExecuted(object parameter)
     {
-        var points = Enumerable.Range(1, 10).Select(i => new Point(i, i * 3));
-        FiniteElement newElement = new(1.0, 2.0) { Points = new ObservableCollection<Point>(points) };
-        Elements.Add(newElement);
+        var dlg = new ElementEditorWindow();
+        dlg.ShowDialog();
+
+        if (dlg.DialogResult == true)
+        {
+            Elements.Add(new(dlg.LeftBorder, dlg.RightBorder));
+            MessageBox.Show("Элемент добавлен");
+        }
     }
 
     private bool CanCreateElementExecute(object parameter) => true;
@@ -105,5 +118,5 @@ public class MainViewModel : ViewModel
         if (parameter is not Point point) return;
 
         _selectedElement?.Points?.Remove(point);
-    } 
+    }
 }
