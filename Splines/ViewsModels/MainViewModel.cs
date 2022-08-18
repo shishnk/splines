@@ -54,14 +54,7 @@ public class MainViewModel : ViewModel
     public MainViewModel(IDataService dataService)
     {
         _dataService = dataService;
-
-        var points = Enumerable.Range(0, 10).Select(i => new Point(i, new Random().NextDouble()));
-        var elements = Enumerable.Range(0, 10).Select(i => new FiniteElement(i, i + 1)
-        {
-            Points = new ObservableCollection<Point>(points)
-        });
-
-        Elements = new(elements);
+        Elements = new();
 
         Graphic = new();
         Graphic.Series.Add(new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)"));
@@ -83,7 +76,10 @@ public class MainViewModel : ViewModel
 
         if (dlg.DialogResult == true)
         {
-            Elements.Add(new(dlg.LeftBorder, dlg.RightBorder));
+            Elements.Add(new(dlg.LeftBorder, dlg.RightBorder)
+            {
+                Points = new ObservableCollection<Point> { new(0.0, 0.0) }
+            });
             MessageBox.Show("Элемент добавлен");
         }
     }
@@ -106,8 +102,7 @@ public class MainViewModel : ViewModel
 
     private void OnInsertPointCommandExecuted(object parameter)
     {
-        Point newPoint = new(0.0, 0.0);
-        _selectedElement?.Points?.Add(newPoint);
+        _selectedElement?.Points?.Add(new(0.0, 0.0));
     }
 
     private bool CanDeletePointCommandExecute(object parameter) =>
@@ -117,6 +112,9 @@ public class MainViewModel : ViewModel
     {
         if (parameter is not Point point) return;
 
-        _selectedElement?.Points?.Remove(point);
+        if (_selectedElement?.Points?.Count >= 2)
+        {
+            _selectedElement?.Points?.Remove(point);
+        }
     }
 }
