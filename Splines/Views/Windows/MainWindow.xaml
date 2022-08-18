@@ -87,7 +87,6 @@
                                             <Button
                                                 fa5:Awesome.Content="Solid_Plus"
                                                 Command="{Binding CreateElement}"
-                                                CommandParameter="{Binding SelectedElement}"
                                                 Foreground="Green" />
                                             <Button
                                                 fa5:Awesome.Content="Solid_Times"
