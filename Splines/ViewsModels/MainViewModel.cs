@@ -1,4 +1,5 @@
 ﻿using OxyPlot;
+using OxyPlot.Axes;
 using OxyPlot.Series;
 using Splines.Views.Windows;
 
@@ -9,6 +10,7 @@ public class MainViewModel : ViewModel
     private IDataService _dataService;
     private FiniteElement? _selectedElement;
     private Point? _selectedPoint;
+    private PlotModel _graphic;
     private readonly CollectionViewSource _selectedElementPoints = new();
     private double _alpha = 1E-07;
     private double _beta = 1E-07;
@@ -45,26 +47,41 @@ public class MainViewModel : ViewModel
         set => Set(ref _beta, value);
     }
 
+    public PlotModel Graphic
+    {
+        get => _graphic;
+        set => Set(ref _graphic, value);
+    }
+
     public ICommand CreateElement { get; }
     public ICommand DeleteElement { get; }
     public ICommand InsertPoint { get; }
     public ICommand DeletePoint { get; }
-    public PlotModel Graphic { get; }
+    public ICommand BuildSpline { get; }
 
     public MainViewModel(IDataService dataService)
     {
         _dataService = dataService;
         Elements = new();
 
-        Graphic = new();
-        Graphic.Series.Add(new FunctionSeries(Math.Cos, 0, 10, 0.1, "cos(x)"));
+        _graphic = new()
+        {
+            PlotType = PlotType.XY,
+            Background = OxyColors.WhiteSmoke
+        };
+        
+        _graphic.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, MinorTickSize = 0, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Solid });
+        _graphic.Axes.Add(new LinearAxis { Position = AxisPosition.Left, MinorTickSize = 0, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Solid });
 
         #region Commands
 
         CreateElement = new LambdaCommand(OnCreateElementCommandExecuted, CanCreateElementExecute);
         DeleteElement = new LambdaCommand(OnRemoveElementCommandExecuted, CanRemoveElementCommandExecute);
+
         InsertPoint = new LambdaCommand(OnInsertPointCommandExecuted, CanInsertPointCommandExecute);
         DeletePoint = new LambdaCommand(OnDeletePointCommandExecuted, CanDeletePointCommandExecute);
+
+        BuildSpline = new LambdaCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
 
         #endregion
     }
@@ -116,5 +133,17 @@ public class MainViewModel : ViewModel
         {
             _selectedElement?.Points?.Remove(point);
         }
+    }
+
+    private bool CanBuildSplineCommandExecute(object parameter)
+        => Elements.Any(elem => elem.Points?.Count >= 4);
+
+    private void OnBuildSplineCommandExecuted(object parameter)
+    {
+        Spline spline = Spline.CreateBuilder().SetElements(Elements.ToArray()).SetParameters((_alpha, _beta));
+        spline.Compute();
+        var series = new LineSeries();
+        series.Points.AddRange(spline.GetData().Select(p => new DataPoint(p.X, p.Value)));
+        _graphic.Series.Add(series);
     }
 }

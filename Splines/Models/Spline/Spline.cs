@@ -30,7 +30,7 @@ public class Spline : IDataService
     private List<Point> _result = default!;
     private (double Alpha, double Beta) _parameters;
     public IEnumerable<Point> GetData() => _result ??
-                                           throw new ArgumentNullException("Точки для построения сплайна не были сформированы");
+                                           throw new ArgumentNullException("РўРѕС‡РєРё РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ СЃРїР»Р°Р№РЅС‹ Р±С‹Р»Рё РЅРµ СЃС„РѕСЂРјРёСЂРѕРІР°РЅС‹");
 
     private void Init()
     {
@@ -58,7 +58,8 @@ public class Spline : IDataService
 
     private void AssemblyMatrix()
     {
-        int[] checker = new int[_elements.Select(element => element.Points).Count()];
+        // int[] checker = new int[_elements.Select(elem => elem.Points!.Count).Sum()];
+        int[] checker = new int[_elements.Sum(elem => elem.Points!.Count)];
         checker.Fill(1);
 
         for (int ielem = 0; ielem < _elements.Length; ielem++)
