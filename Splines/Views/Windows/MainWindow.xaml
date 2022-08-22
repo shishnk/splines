@@ -1,12 +1,7 @@
 ﻿<Window
-    x:Class="Splines.Views.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-    xmlns:converters="clr-namespace:Splines.Infrastructure.Converters"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:fa5="http://schemas.fontawesome.com/icons/"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:oxy="http://oxyplot.org/wpf" xmlns:spline="clr-namespace:Splines.Models.Spline"
-    xmlns:vm="clr-namespace:Splines.ViewsModels" Title="Splines"
+    x:Class="Splines.Views.Windows.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+    xmlns:converters="clr-namespace:Splines.Infrastructure.Converters" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:fa5="http://schemas.fontawesome.com/icons/" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:oxy="http://oxyplot.org/wpf" xmlns:spline="clr-namespace:Splines.Models.Spline" xmlns:vm="clr-namespace:Splines.ViewsModels" Title="Splines"
     Width="1200" Height="760"
     DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
     mc:Ignorable="d">
@@ -25,8 +20,7 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="0.2*" />
             </Grid.ColumnDefinitions>
-            <DockPanel
-                Grid.Column="0" Background="AliceBlue">
+            <DockPanel Grid.Column="0" Background="AliceBlue">
                 <oxy:PlotView Background="AliceBlue" Model="{Binding Graphic}" />
             </DockPanel>
             <Border
@@ -45,38 +39,34 @@
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <Label Content="Alpha" Padding="0, 4, 0, 6"/>
-                                <TextBox Margin="3, 2, 0, 3"
-                                    Width="50" Height="20"
+                                <Label Padding="0,4,0,6" Content="Alpha" />
+                                <TextBox
+                                    Width="50" Height="20" Margin="3,2,0,3"
                                     Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged, StringFormat=N4}" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Label Content="Beta" Padding="0, 4, 0, 6"/>
+                                <Label Padding="0,4,0,6" Content="Beta" />
                                 <TextBox
-                                    Width="50" Height="20" Margin="3, 2,0, 3"
+                                    Width="50" Height="20" Margin="3,2,0,3"
                                     Text="{Binding Beta, UpdateSourceTrigger=PropertyChanged, StringFormat=N4}" />
                             </StackPanel>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Row="1" Header="Points">
                         <DataGrid
-                            AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False"
-                            CanUserResizeRows="False"
+                            AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False"
                             CanUserSortColumns="False"
-                            ItemsSource="{Binding Points}"
-                            SelectedItem="{Binding SelectedPoint}"
+                            ItemsSource="{Binding PointListingViewModel.Points}"
                             SelectionMode="Single">
                             <DataGrid.Resources>
                                 <DataTemplate x:Key="Delete">
                                     <Button
-                                        Command="{Binding DataContext.DeletePoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                        Command="{Binding DataContext.PointListingViewModel.DeletePoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                         CommandParameter="{Binding}"
                                         Content="X" />
                                 </DataTemplate>
                                 <DataTemplate x:Key="Insert">
-                                    <Button
-                                        Command="{Binding DataContext.InsertPoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                        Content="+" />
+                                    <Button Command="{Binding DataContext.PointListingViewModel.InsertPoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" Content="+" />
                                 </DataTemplate>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
@@ -99,15 +89,20 @@
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Column="0" Orientation="Horizontal">
-                            <Label Content="Partitions"/>
-                            <TextBox Text="{Binding Partitions, UpdateSourceTrigger=PropertyChanged}" Height="15" Width="20" Margin="0, 0, 0, 3"/>
+                            <Label Content="Partitions" />
+                            <TextBox
+                                Width="20" Height="17" Margin="0,0,0,3" Padding="0,0,1,1"
+                                HorizontalContentAlignment="Center"
+                                Text="{Binding Partitions, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
                         <StackPanel Grid.Row="0" Grid.Column="1">
-                            <Button fa5:Awesome.Content="Regular_Bookmark" Width="60" Margin="33, 3, 0, 0" Height="20"/>
+                            <Button
+                                Width="60" Height="20" Margin="33,3,0,0" fa5:Awesome.Content="Regular_Bookmark"
+                                Command="{Binding BuildSpline}" />
                         </StackPanel>
                     </Grid>
                 </Grid>

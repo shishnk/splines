@@ -2,6 +2,6 @@
 
 public static class Registrator
 {
-    public static IServiceCollection AddViewModelsAndServices(this IServiceCollection services)
-        => services.AddSingleton<MainViewModel>().AddSingleton<IDataService, Spline>();
+    public static void AddViewModelsAndServices(this IServiceCollection services)
+        => services.AddSingleton<MainViewModel>().AddSingleton<IDataService, Spline>().AddSingleton<PointListingViewModel>();
 }
