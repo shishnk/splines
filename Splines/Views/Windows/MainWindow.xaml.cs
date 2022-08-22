@@ -6,25 +6,4 @@
 public partial class MainWindow
 {
     public MainWindow() => InitializeComponent();
-
-    private void ElementsCollectionOnFilter(object sender, FilterEventArgs e)
-    {
-        if (e.Item is not FiniteElement element) return;
-
-        var filterText = ElementFilterText.Text;
-
-        if (filterText.Length == 0) return;
-
-        if (new string($"Element [{element.LeftBorder}; {element.RightBorder}]").Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
-        if (new string($"Element [{element.LeftBorder};{element.RightBorder}]").Contains(filterText, StringComparison.OrdinalIgnoreCase)) return;
-
-        e.Accepted = false;
-    }
-
-    private void OnElementsFilterChanged(object sender, TextChangedEventArgs e)
-    {
-        var textBox = (TextBox)sender;
-        var collection = (CollectionViewSource)textBox.FindResource("ElementsCollection");
-        collection.View.Refresh();
-    }
 }
