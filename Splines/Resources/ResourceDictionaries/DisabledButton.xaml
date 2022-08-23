@@ -1,0 +1,11 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="ButtonDisabledStyle" TargetType="Button">
+        <Setter Property="ToolTip" Value="Build the spline" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="ToolTip" Value="Minimum 4 points" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

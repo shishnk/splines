@@ -9,7 +9,8 @@
     Title="Splines"
     Width="1200" Height="760"
     DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    Icon="{StaticResource AppIcon}">
     <Window.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
@@ -29,7 +30,7 @@
                 <ColumnDefinition Width="0.2*" />
             </Grid.ColumnDefinitions>
             <DockPanel Grid.Column="0" Background="AliceBlue">
-                <oxy:PlotView Background="AliceBlue" Model="{Binding Graphic, UpdateSourceTrigger=PropertyChanged}" />
+                <oxy:PlotView Background="AliceBlue" Model="{Binding Graphic}" />
             </DockPanel>
             <Border
                 Grid.Column="1" Padding="5" BorderBrush="LightGray" BorderThickness="1"
@@ -122,8 +123,9 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2" Grid.Row="0">
                             <Button
-                                Width="60" Height="20" Content="{StaticResource ButtonImage}"
-                                Command="{Binding BuildSpline}" Margin="20, 0, 0, 10" ToolTip="Build the spline" />
+                                Width="60" Height="20" Content="{StaticResource ButtonImage}" Style="{StaticResource ButtonDisabledStyle}"
+                                Command="{Binding BuildSpline}" Margin="20, 0, 0, 10" ToolTipService.ShowOnDisabled="True">
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Grid>

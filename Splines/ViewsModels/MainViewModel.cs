@@ -1,9 +1,4 @@
-﻿using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
-using Splines.Views.Windows;
-
-namespace Splines.ViewsModels;
+﻿namespace Splines.ViewsModels;
 
 public class MainViewModel : ViewModel
 {
@@ -39,6 +34,7 @@ public class MainViewModel : ViewModel
 
     public PointListingViewModel PointListingViewModel { get; }
     public ICommand BuildSpline { get; }
+    public ICommand DrawPoints { get; }
 
     public MainViewModel(IDataService dataService)
     {
@@ -64,6 +60,7 @@ public class MainViewModel : ViewModel
         #region Commands
 
         BuildSpline = new LambdaCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
+        DrawPoints = new LambdaCommand(OnDrawPointsCommandExecuted, CanDrawPointsCommandExecute);
 
         #endregion
     }
@@ -78,5 +75,22 @@ public class MainViewModel : ViewModel
         // var series = new LineSeries();
         // series.Points.AddRange(spline.GetData().Select(p => new DataPoint(p.X, p.Value)));
         // _graphic.Series.Add(series);
+    }
+
+    private bool CanDrawPointsCommandExecute(object parameter) => true;
+    
+    private void OnDrawPointsCommandExecuted(object parameter)
+    {
+        var series = new ScatterSeries()
+        {
+            MarkerType = MarkerType.Circle,
+            MarkerSize = 3.0,
+            MarkerFill = OxyColors.Black
+        };
+        
+        series.Points.AddRange(PointListingViewModel.Points.Select(p => new ScatterPoint(p.X, p.Value)));
+        _graphic.Series.Clear();
+        _graphic.Series.Add(series);
+        _graphic.InvalidatePlot(true);
     }
 }

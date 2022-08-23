@@ -11,7 +11,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Images" />
 		<Folder Include="Models\Spline\" />
 		<Using Include="System.Windows.Input" />
 		<Using Include="Splines.Infrastructure.Commands.Base" />
@@ -46,9 +45,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="Images\wave.png">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </None>
+	  <None Remove="Images\button.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Resources\Images\button.png" />
+	  <None Remove="Resources\Images\icon.png" />
+	  <Resource Include="Resources\Images\icon.png" />
 	</ItemGroup>
 
 </Project>
