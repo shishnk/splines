@@ -1,3 +1,6 @@
+using OxyPlot;
+using OxyPlot.Series;
+
 namespace Splines.ViewsModels;
 
 public class PointListingViewModel : ViewModel
@@ -6,7 +9,7 @@ public class PointListingViewModel : ViewModel
     public IEnumerable<PointWrapper> Points => _points;
     public ICommand InsertPoint { get; }
     public ICommand DeletePoint { get; }
-
+    
     public PointListingViewModel()
     {
         _points = new() { new(new(0.0, 0.0)) };

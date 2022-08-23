@@ -11,6 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Folder Include="Images" />
 		<Folder Include="Models\Spline\" />
 		<Using Include="System.Windows.Input" />
 		<Using Include="Splines.Infrastructure.Commands.Base" />
@@ -30,7 +31,10 @@
 		<Using Include="Splines.Infrastructure.Commands" />
 		<Using Include="System.Windows.Controls" />
 		<Using Include="System.Windows.Data" />
-		<Using Include="System.Globalization;" />
+		<Using Include="System.Globalization" />
+		<Using Include="OxyPlot" />
+		<Using Include="OxyPlot.Axes" />
+		<Using Include="OxyPlot.Series" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,6 +43,12 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
 		<PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Images\wave.png">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

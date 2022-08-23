@@ -30,7 +30,7 @@ public class Spline : IDataService
     private List<Point> _result = default!;
     private (double Alpha, double Beta) _parameters;
     public IEnumerable<Point> GetData() => _result ??
-                                           throw new ArgumentNullException("Точки для построения сплайна не были сформированы");
+                                           throw new ArgumentNullException("The points to build the spline were not formed.");
 
     private void Init()
     {

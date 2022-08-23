@@ -1,22 +1,23 @@
 ﻿namespace Splines.Infrastructure.Converters;
 
-[ValueConversion(typeof(FiniteElement), typeof(string))]
-public class FiniteElementToString : IValueConverter
+[ValueConversion(typeof(bool), typeof(Visibility))]
+public class BooleanToVisibilityConverter : IValueConverter
 {
-    public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not FiniteElement element) return null;
+        bool visibility = false;
+        if (value is bool)
+        {
+            visibility = (bool)value;
+        }
 
-        return $"Element [{element.LeftBorder}; {element.RightBorder}]";
+        return visibility ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not string str) return null;
+        Visibility visibility = (Visibility)value;
 
-        var parameters = str.Split(";");
-
-        return new FiniteElement(double.Parse(parameters[0].Split('[')[1]), 
-            double.Parse(parameters[1].Split(']')[0]));
+        return (visibility == Visibility.Visible);
     }
 }
