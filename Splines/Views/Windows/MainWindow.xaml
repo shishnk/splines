@@ -37,9 +37,10 @@
                 CornerRadius="4">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height=".15*" />
+                        <RowDefinition Height=".22*" />
                         <RowDefinition Height="1*" />
-                        <RowDefinition Height="*" />
+                        <RowDefinition Height=".33*" />
+                        <RowDefinition />
                     </Grid.RowDefinitions>
                     <GroupBox Grid.Row="0" Header="Parameters">
                         <Grid>
@@ -47,16 +48,16 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                <Label Padding="0,4,0,6" Content="Alpha" />
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0, 5, 0 , 0" HorizontalAlignment="Center">
+                                <Label Content="Alpha" VerticalContentAlignment="Center"/>
                                 <TextBox
-                                    Width="50" Height="20" Margin="3,2,0,5"
+                                    Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged, StringFormat=N4}" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                <Label Padding="0,4,0,6" Content="Beta" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0, 5, 0, 0 " HorizontalAlignment="Left">
+                                <Label Content="Beta" VerticalContentAlignment="Center"/>
                                 <TextBox
-                                    Width="50" Height="20" Margin="3,2,0,5"
+                                    Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Beta, UpdateSourceTrigger=PropertyChanged, StringFormat=N4}" />
                             </StackPanel>
                         </Grid>
@@ -71,63 +72,69 @@
                             <DataGrid.Resources>
                                 <DataTemplate x:Key="Delete">
                                     <Button
-                                        Command="{Binding DataContext.PointListingViewModel.DeletePoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, UpdateSourceTrigger=PropertyChanged}"
+                                        Command="{Binding DataContext.PointListingViewModel.DeletePoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                         CommandParameter="{Binding}"
-                                        Content="X" />
+                                        Content="X" Background="LightCoral"/>
                                 </DataTemplate>
                                 <DataTemplate x:Key="Insert">
                                     <Button
-                                        Command="{Binding DataContext.PointListingViewModel.InsertPoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, UpdateSourceTrigger=PropertyChanged}"
-                                        Content="+" />
+                                        Command="{Binding DataContext.PointListingViewModel.InsertPoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                        Content="+" Background="LightGreen"/>
                                 </DataTemplate>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding X}"
+                                    Binding="{Binding X, UpdateSourceTrigger=PropertyChanged}"
                                     Header="X" />
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding Value}"
+                                    Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                                     Header="F(X)" />
                                 <DataGridTemplateColumn CellTemplate="{StaticResource Insert}" Header=" " />
                                 <DataGridTemplateColumn CellTemplate="{StaticResource Delete}" Header=" " />
                             </DataGrid.Columns>
                         </DataGrid>
                     </GroupBox>
-                    <Grid Grid.Row="2">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="0.5" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="30" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <CheckBox Name="AdvancedSettings" IsChecked="False" Content="Advanced" Grid.ColumnSpan="3" />
-                        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
-                                    Visibility="{Binding IsChecked,ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Label Content="Partitions" ToolTip="Set the number of finite elements" />
-                            <TextBox
-                                Width="20" Height="17" Margin="0,0,0,3" Padding="0,0,1,1"
-                                HorizontalContentAlignment="Center"
-                                Text="{Binding Partitions, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" Grid.Column="2"
-                                    Visibility="{Binding IsChecked, ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
-                            <Button fa5:Awesome.Content="Solid_PaintBrush" Width="60" Margin="27, 5, 0, 0"
-                                    Command="{Binding DrawPoints}" HorizontalAlignment="Left"
-                                    ToolTip="Draw the points" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Grid.Row="0">
-                            <Button
-                                Width="60" Height="20" Content="{StaticResource ButtonImage}" Style="{StaticResource ButtonDisabledStyle}"
-                                Command="{Binding BuildSpline}" Margin="20, 0, 0, 10" ToolTipService.ShowOnDisabled="True">
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                    <Border Grid.Row="2" Padding="5" BorderBrush="LightGray" BorderThickness="1"
+                            CornerRadius="4">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height=".7*"/>
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <CheckBox Name="AdvancedSettings" IsChecked="True" Content="Advanced" Grid.ColumnSpan="2" />
+                            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
+                                        Visibility="{Binding IsChecked,ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Label Content="Partitions" ToolTip="Set the number of finite elements"/>
+                                <TextBox
+                                    Width="20" Height="17" Margin="0,0,0,23" Padding="0, 0,3, 0"
+                                    HorizontalContentAlignment="Center"
+                                    Text="{Binding Partitions, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1"
+                                        Visibility="{Binding IsChecked, ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Button fa5:Awesome.Content="Solid_PaintBrush" Width="60" HorizontalAlignment="Right"
+                                        Command="{Binding DrawPoints}"
+                                        ToolTip="Draw the points" Background="Lavender" Height="17" Margin="0, 0, 0, 7"/>
+                                <Button fa5:Awesome.Content="Solid_Eraser" ToolTip="Clear the plane" Width="60" HorizontalAlignment="Right"
+                                        Height="17"
+                                        Background="Plum" Command="{Binding ClearPlane}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <Button
+                                    Width="60" Height="17" Content="{StaticResource ButtonImage}"
+                                    Style="{StaticResource ButtonDisabledStyle}"
+                                    Command="{Binding BuildSpline}"
+                                    ToolTipService.ShowOnDisabled="True" HorizontalAlignment="Right" Background="LightGreen">
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
                 </Grid>
             </Border>
         </Grid>

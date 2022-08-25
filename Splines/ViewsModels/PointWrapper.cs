@@ -1,3 +1,5 @@
+global using Point = Splines.Models.Spline.Point;
+
 namespace Splines.ViewsModels;
 
 public class PointWrapper : ViewModel

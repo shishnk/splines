@@ -11,13 +11,14 @@ public class FiniteElement
     [JsonIgnore]
     public double Lenght { get; }
 
-    public ICollection<Point>? Points { get; set; }
+    public List<Point> Points { get; }
 
     [JsonConstructor]
     public FiniteElement(double leftBorder, double rightBorder)
     {
         (LeftBorder, RightBorder) = (leftBorder, rightBorder);
         Lenght = Math.Abs(rightBorder - leftBorder);
+        Points = new();
     }
 
     public static FiniteElement[]? ReadJson(string jsonPath)
@@ -45,5 +46,5 @@ public class FiniteElement
     public override string ToString()
         => $"Element interval is [{LeftBorder}, {RightBorder}]";
 
-    public Point[]? PointsAsArray => Points?.ToArray();
+    public Point[] PointsAsArray => Points.ToArray();
 }

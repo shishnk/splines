@@ -1,6 +1,6 @@
 namespace Splines.Models.Spline;
 
-public class Spline : IDataService
+public class Spline
 {
     public class SplineBuilder
     {
@@ -12,9 +12,15 @@ public class Spline : IDataService
             return this;
         }
 
-        public SplineBuilder SetElements(FiniteElement[] elements)
+        public SplineBuilder SetPartitions(int partitions)
         {
-            _spline._elements = elements;
+            _spline._partitions = partitions;
+            return this;
+        }
+
+        public SplineBuilder SetPoints(Point[] points)
+        {
+            _spline._points = points;
             return this;
         }
 
@@ -23,31 +29,67 @@ public class Spline : IDataService
     }
 
     private delegate double Basis(double x, double h);
+
     private Basis[] _basis = default!, _dBasis = default!, _ddBasis = default!;
+    private Point[] _points = default!;
     private FiniteElement[] _elements = default!;
     private Matrix _matrix = default!;
     private Vector<double> _vector = default!;
     private List<Point> _result = default!;
     private (double Alpha, double Beta) _parameters;
-    public IEnumerable<Point> GetData() => _result ??
-                                           throw new ArgumentNullException("The points to build the spline were not formed.");
+    private int _partitions;
+
+    public List<Point> Result => _result;
 
     private void Init()
     {
-        _matrix = new((_elements.Length * 2) + 2);
+        _matrix = new(_elements.Length * 2 + 2);
         _vector = new(_matrix.Size);
         _result = new();
 
-        _basis = new Basis[]{HermiteBasis.Psi1, HermiteBasis.Psi2,
-                                         HermiteBasis.Psi3, HermiteBasis.Psi4};
-        _dBasis = new Basis[]{HermiteBasis.DPsi1, HermiteBasis.DPsi2,
-                                          HermiteBasis.DPsi3, HermiteBasis.DPsi4};
-        _ddBasis = new Basis[]{HermiteBasis.DdPsi1, HermiteBasis.DdPsi2,
-                                           HermiteBasis.DdPsi3, HermiteBasis.DdPsi4};
+        _basis = new Basis[]
+        {
+            HermiteBasis.Psi1, HermiteBasis.Psi2,
+            HermiteBasis.Psi3, HermiteBasis.Psi4
+        };
+        _dBasis = new Basis[]
+        {
+            HermiteBasis.DPsi1, HermiteBasis.DPsi2,
+            HermiteBasis.DPsi3, HermiteBasis.DPsi4
+        };
+        _ddBasis = new Basis[]
+        {
+            HermiteBasis.DdPsi1, HermiteBasis.DdPsi2,
+            HermiteBasis.DdPsi3, HermiteBasis.DdPsi4
+        };
+    }
+
+    private void FormingElements()
+    {
+        _elements = new FiniteElement[_partitions];
+
+        int idx = 0;
+        int saveIdx = 0;
+        int count = _points.Length / _partitions;
+
+        for (int i = 0; i < _elements.Length; i++)
+        {
+            _elements[i] = new(_points[idx + saveIdx].X, _points[idx + saveIdx + count - 1].X);
+
+            for (int j = 0; j < count; j++)
+            {
+                _elements[i].Points.Add(_points[saveIdx + idx]);
+                idx++;
+            }
+
+            saveIdx = idx;
+            idx = 0;
+        }
     }
 
     public void Compute()
     {
+        FormingElements();
         Init();
         AssemblyMatrix();
         //_matrix.PrintDense("_matrix.txt");
@@ -58,21 +100,24 @@ public class Spline : IDataService
 
     private void AssemblyMatrix()
     {
-        int[] checker = new int[_elements.Select(element => element.Points).Count()];
+        int[] checker = new int[_points.Length];
         checker.Fill(1);
 
         for (int ielem = 0; ielem < _elements.Length; ielem++)
         {
-            for (int ipoint = 0; ipoint < _elements[ielem].Points!.Count(); ipoint++)
+            for (int ipoint = 0; ipoint < _elements[ielem].Points.Count; ipoint++)
             {
-                if (!_elements[ielem].Contain(_elements[ielem].PointsAsArray![ipoint]) || checker[ipoint] != 1) continue;
+                if (!_elements[ielem].Contain(_elements[ielem].PointsAsArray[ipoint]) ||
+                    checker[ipoint] != 1) continue;
 
                 checker[ipoint] = -1;
-                double x = (_elements[ielem].PointsAsArray![ipoint].X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
+                double x = (_elements[ielem].PointsAsArray![ipoint].X - _elements[ielem].LeftBorder) /
+                           _elements[ielem].Lenght;
 
                 for (int i = 0; i < _basis.Length; i++)
                 {
-                    _vector[2 * ielem + i] += _elements[ielem].PointsAsArray![ipoint].Value * _basis[i](x, _elements[ielem].Lenght);
+                    _vector[2 * ielem + i] += _elements[ielem].PointsAsArray![ipoint].Value *
+                                              _basis[i](x, _elements[ielem].Lenght);
 
                     for (int j = 0; j < _basis.Length; j++)
                     {
