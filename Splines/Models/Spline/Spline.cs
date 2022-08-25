@@ -67,7 +67,8 @@ public class Spline
     private void FormingElements()
     {
         _elements = new FiniteElement[_partitions];
-
+        _points = _points.OrderBy(p => p.X).ToArray();
+        
         int idx = 0;
         int saveIdx = 0;
         int count = _points.Length / _partitions;
@@ -148,7 +149,7 @@ public class Spline
                 sum += _basis.Select((t, i) => _vector[(2 * ielem) + i] * t(x, _elements[ielem].Lenght)).Sum();
                 _result.Add(new(changedPoint.X, sum));
 
-                changedPoint += (0.2, 0.0);
+                changedPoint += (0.05, 0.0);
                 sum = 0.0;
             } while (_elements[ielem].Contain(changedPoint));
         }

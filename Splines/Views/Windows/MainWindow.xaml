@@ -15,15 +15,6 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <DockPanel>
-        <StatusBar DockPanel.Dock="Bottom">
-            <StatusBarItem>
-                <TextBlock Text="Loading.." />
-            </StatusBarItem>
-            <StatusBarItem>
-                <ProgressBar
-                    Width="120" Height="14" Value="30" />
-            </StatusBarItem>
-        </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -52,13 +43,13 @@
                                 <Label Content="Alpha" VerticalContentAlignment="Center"/>
                                 <TextBox
                                     Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
-                                    Text="{Binding Alpha, UpdateSourceTrigger=PropertyChanged, StringFormat=N4}" />
+                                    Text="{Binding Alpha, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0, 5, 0, 0 " HorizontalAlignment="Left">
                                 <Label Content="Beta" VerticalContentAlignment="Center"/>
                                 <TextBox
                                     Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
-                                    Text="{Binding Beta, UpdateSourceTrigger=PropertyChanged, StringFormat=N4}" />
+                                    Text="{Binding Beta, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
                         </Grid>
                     </GroupBox>
@@ -85,11 +76,11 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding X, UpdateSourceTrigger=PropertyChanged}"
+                                    Binding="{Binding X, UpdateSourceTrigger=LostFocus}"
                                     Header="X" />
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
+                                    Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
                                     Header="F(X)" />
                                 <DataGridTemplateColumn CellTemplate="{StaticResource Insert}" Header=" " />
                                 <DataGridTemplateColumn CellTemplate="{StaticResource Delete}" Header=" " />
