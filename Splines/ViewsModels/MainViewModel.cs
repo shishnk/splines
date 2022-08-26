@@ -83,10 +83,10 @@ public class MainViewModel : ViewModel
         };
         var lineSeries = new LineSeries();
 
-        _graphic.Axes[0].Minimum = PointListingViewModel.Points.MinBy(p => p.X)!.X - 20.0;
-        _graphic.Axes[0].Maximum = PointListingViewModel.Points.MaxBy(p => p.X)!.X + 20.0;
-        _graphic.Axes[1].Minimum = PointListingViewModel.Points.MinBy(p => p.Value)!.Value - 20.0;
-        _graphic.Axes[1].Maximum = PointListingViewModel.Points.MaxBy(p => p.Value)!.Value + 20.0;
+        _graphic.Axes[0].Minimum = PointListingViewModel.Points.MinBy(p => p.X)!.X - 15.0;
+        _graphic.Axes[0].Maximum = PointListingViewModel.Points.MaxBy(p => p.X)!.X + 15.0;
+        _graphic.Axes[1].Minimum = PointListingViewModel.Points.MinBy(p => p.Value)!.Value - 15.0;
+        _graphic.Axes[1].Maximum = PointListingViewModel.Points.MaxBy(p => p.Value)!.Value + 15.0;
 
         scatterSeries.Points.AddRange(PointListingViewModel.Points.Select(p => new ScatterPoint(p.X, p.Value)));
         lineSeries.Points.AddRange(spline.Result.Select(p => new DataPoint(p.X, p.Value)));

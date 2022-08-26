@@ -98,7 +98,7 @@
                                 <RowDefinition Height=".7*"/>
                                 <RowDefinition />
                             </Grid.RowDefinitions>
-                            <CheckBox Name="AdvancedSettings" IsChecked="True" Content="Advanced" Grid.ColumnSpan="2" />
+                            <CheckBox Name="AdvancedSettings" IsChecked="False" Content="Advanced" Grid.ColumnSpan="2" />
                             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
                                         Visibility="{Binding IsChecked,ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Label Content="Partitions" ToolTip="Set the number of finite elements"/>

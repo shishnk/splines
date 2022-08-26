@@ -68,24 +68,29 @@ public class Spline
     {
         _elements = new FiniteElement[_partitions];
         _points = _points.OrderBy(p => p.X).ToArray();
-        
-        int idx = 0;
-        int saveIdx = 0;
+
         int count = _points.Length / _partitions;
+        int remainder = _points.Length % _partitions;
+        int idx = 0;
 
-        for (int i = 0; i < _elements.Length; i++)
+        if (_partitions == 1)
         {
-            _elements[i] = new(_points[idx + saveIdx].X, _points[idx + saveIdx + count - 1].X);
-
-            for (int j = 0; j < count; j++)
-            {
-                _elements[i].Points.Add(_points[saveIdx + idx]);
-                idx++;
-            }
-
-            saveIdx = idx;
-            idx = 0;
+            _elements[0] = new(_points[0].X, _points[count - 1].X);
+            return;
         }
+        
+        _elements[0] = new(_points[0].X, _points[count - 1].X);
+        idx += count;
+
+        for (int i = 1; i < _elements.Length - 1; i++)
+        {
+            _elements[i] = new(_elements[i - 1].LeftBorder, _points[idx + count - 1].X);
+            idx += count;
+        }
+
+        _elements[_partitions - 1] = remainder != 0
+            ? new(_elements[_partitions - 2].RightBorder, _points[idx + count + remainder - 1].X)
+            : new(_elements[_partitions - 2].RightBorder, _points[idx + count - 1].X);
     }
 
     public void Compute()
@@ -106,18 +111,18 @@ public class Spline
 
         for (int ielem = 0; ielem < _elements.Length; ielem++)
         {
-            for (int ipoint = 0; ipoint < _elements[ielem].Points.Count; ipoint++)
+            for (int ipoint = 0; ipoint < _points.Length; ipoint++)
             {
-                if (!_elements[ielem].Contain(_elements[ielem].PointsAsArray[ipoint]) ||
+                if (!_elements[ielem].Contain(_points[ipoint]) ||
                     checker[ipoint] != 1) continue;
 
                 checker[ipoint] = -1;
-                double x = (_elements[ielem].PointsAsArray![ipoint].X - _elements[ielem].LeftBorder) /
+                double x = (_points[ipoint].X - _elements[ielem].LeftBorder) /
                            _elements[ielem].Lenght;
 
                 for (int i = 0; i < _basis.Length; i++)
                 {
-                    _vector[2 * ielem + i] += _elements[ielem].PointsAsArray![ipoint].Value *
+                    _vector[2 * ielem + i] += _points[ipoint].Value *
                                               _basis[i](x, _elements[ielem].Lenght);
 
                     for (int j = 0; j < _basis.Length; j++)
