@@ -7,4 +7,4 @@ flowchart LR
 ```
 
 ## Пример построения сплайна
-![](Splines\Resources\Images\example.png)
+![](Splines/Resources/Images/example.png)
