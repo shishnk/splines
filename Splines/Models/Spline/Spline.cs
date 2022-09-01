@@ -69,28 +69,19 @@ public class Spline
         _elements = new FiniteElement[_partitions];
         _points = _points.OrderBy(p => p.X).ToArray();
 
-        int count = _points.Length / _partitions;
-        int remainder = _points.Length % _partitions;
-        int idx = 0;
-
         if (_partitions == 1)
         {
-            _elements[0] = new(_points[0].X, _points[count - 1].X);
+            _elements[0] = new(_points[0].X, _points[^1].X);
             return;
         }
-        
-        _elements[0] = new(_points[0].X, _points[count - 1].X);
-        idx += count;
 
-        for (int i = 1; i < _elements.Length - 1; i++)
+        double step = (_points.MaxBy(p => p.X)!.X - _points.MinBy(p => p.X)!.X) / _partitions;
+        _elements[0] = new(_points[0].X, _points[0].X + step);
+
+        for (int i = 1; i < _elements.Length; i++)
         {
-            _elements[i] = new(_elements[i - 1].LeftBorder, _points[idx + count - 1].X);
-            idx += count;
+            _elements[i] = new(_elements[i - 1].RightBorder, _elements[i - 1].RightBorder + step);
         }
-
-        _elements[_partitions - 1] = remainder != 0
-            ? new(_elements[_partitions - 2].RightBorder, _points[idx + count + remainder - 1].X)
-            : new(_elements[_partitions - 2].RightBorder, _points[idx + count - 1].X);
     }
 
     public void Compute()
@@ -151,7 +142,7 @@ public class Spline
             {
                 double x = (changedPoint.X - _elements[ielem].LeftBorder) / _elements[ielem].Lenght;
 
-                sum += _basis.Select((t, i) => _vector[(2 * ielem) + i] * t(x, _elements[ielem].Lenght)).Sum();
+                sum += _basis.Select((t, i) => _vector[2 * ielem + i] * t(x, _elements[ielem].Lenght)).Sum();
                 _result.Add(new(changedPoint.X, sum));
 
                 changedPoint += (0.05, 0.0);
