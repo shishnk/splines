@@ -1,15 +1,12 @@
 namespace Splines.Models.Spline;
 
-public class FiniteElement
+public readonly record struct FiniteElement
 {
-    [JsonProperty("Left Border")]
-    public double LeftBorder { get; }
+    [JsonProperty("Left Border"), JsonRequired] public double LeftBorder { get; }
 
-    [JsonProperty("Right Border")]
-    public double RightBorder { get; }
+    [JsonProperty("Right Border"), JsonRequired] public double RightBorder { get; }
 
-    [JsonIgnore]
-    public double Lenght { get; }
+    [JsonIgnore] public double Lenght { get; }
 
     [JsonConstructor]
     public FiniteElement(double leftBorder, double rightBorder)
@@ -33,7 +30,7 @@ public class FiniteElement
         catch (Exception ex)
         {
             Console.WriteLine($"We had problem: {ex.Message}");
-            return null;
+            throw;
         }
     }
 
