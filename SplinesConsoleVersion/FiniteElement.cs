@@ -2,9 +2,11 @@ namespace SplinesConsoleVersion;
 
 public readonly record struct FiniteElement
 {
-    [JsonProperty("Left Border"), JsonRequired] public double LeftBorder { get; }
+    [JsonProperty("Left Border"), JsonRequired]
+    public double LeftBorder { get; }
 
-    [JsonProperty("Right Border"), JsonRequired] public double RightBorder { get; }
+    [JsonProperty("Right Border"), JsonRequired]
+    public double RightBorder { get; }
 
     [JsonIgnore] public double Lenght { get; }
 
@@ -15,7 +17,7 @@ public readonly record struct FiniteElement
         Lenght = Math.Abs(rightBorder - leftBorder);
     }
 
-    public static FiniteElement[]? ReadJson(string jsonPath)
+    public static FiniteElement[] ReadJson(string jsonPath)
     {
         try
         {
@@ -25,7 +27,7 @@ public readonly record struct FiniteElement
             }
 
             using var sr = new StreamReader(jsonPath);
-            return JsonConvert.DeserializeObject<FiniteElement[]>(sr.ReadToEnd());
+            return JsonConvert.DeserializeObject<FiniteElement[]>(sr.ReadToEnd()) ?? Array.Empty<FiniteElement>();
         }
         catch (Exception ex)
         {

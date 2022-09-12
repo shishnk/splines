@@ -1,6 +1,6 @@
 namespace Splines.Models.Spline;
 
-public class Point
+public struct Point
 {
     public double X { get; set; }
     public double Value { get; set; }
@@ -8,9 +8,9 @@ public class Point
     public Point(double x, double value) => (X, Value) = (x, value);
 
     public static Point operator +(Point point, (double X, double Value) v)
-         => new(point.X + v.X, point.Value + v.Value);
+        => new(point.X + v.X, point.Value + v.Value);
 
-    public static Point[]? ReadJson(string jsonPath)
+    public static Point[] ReadJson(string jsonPath)
     {
         try
         {
@@ -20,12 +20,12 @@ public class Point
             }
 
             using var sr = new StreamReader(jsonPath);
-            return JsonConvert.DeserializeObject<Point[]>(sr.ReadToEnd());
+            return JsonConvert.DeserializeObject<Point[]>(sr.ReadToEnd()) ?? Array.Empty<Point>();
         }
         catch (Exception ex)
         {
             Console.WriteLine($"We had problem: {ex.Message}");
-            return null;
+            throw;
         }
     }
 

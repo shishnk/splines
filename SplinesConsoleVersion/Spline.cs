@@ -1,3 +1,5 @@
+using Throw;
+
 namespace SplinesConsoleVersion;
 
 public class Spline
@@ -20,6 +22,8 @@ public class Spline
 
         public SplineBuilder SetElements(FiniteElement[] elements)
         {
+            elements.ThrowIfNull().IfEmpty();
+            
             _spline._elements = elements;
             return this;
         }
@@ -29,6 +33,7 @@ public class Spline
     }
 
     private delegate double Basis(double x, double h);
+
     private Basis[] _basis = default!, _dBasis = default!, _ddBasis = default!;
     private FiniteElement[] _elements = default!;
     private Point[] _points = default!;
@@ -43,12 +48,21 @@ public class Spline
         _vector = new(_matrix.Size);
         _result = new();
 
-        _basis = new Basis[]{HermiteBasis.Psi1, HermiteBasis.Psi2,
-                                         HermiteBasis.Psi3, HermiteBasis.Psi4};
-        _dBasis = new Basis[]{HermiteBasis.DPsi1, HermiteBasis.DPsi2,
-                                          HermiteBasis.DPsi3, HermiteBasis.DPsi4};
-        _ddBasis = new Basis[]{HermiteBasis.DdPsi1, HermiteBasis.DdPsi2,
-                                           HermiteBasis.DdPsi3, HermiteBasis.DdPsi4};
+        _basis = new Basis[]
+        {
+            HermiteBasis.Psi1, HermiteBasis.Psi2,
+            HermiteBasis.Psi3, HermiteBasis.Psi4
+        };
+        _dBasis = new Basis[]
+        {
+            HermiteBasis.DPsi1, HermiteBasis.DPsi2,
+            HermiteBasis.DPsi3, HermiteBasis.DPsi4
+        };
+        _ddBasis = new Basis[]
+        {
+            HermiteBasis.DdPsi1, HermiteBasis.DdPsi2,
+            HermiteBasis.DdPsi3, HermiteBasis.DdPsi4
+        };
     }
 
     public void Compute()

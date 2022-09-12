@@ -4,7 +4,7 @@ namespace Splines.ViewsModels;
 
 public class PointWrapper : ViewModel
 {
-    private readonly Point _point;
+    private Point _point;
 
     public double X
     {
