@@ -1,6 +1,6 @@
 ﻿namespace Splines.ViewsModels;
 
-public class MainViewModel : ViewModel
+public class MainViewModel : ObservableObject
 {
     private PlotModel _graphic;
     private double _alpha = 1E-07;
@@ -10,25 +10,25 @@ public class MainViewModel : ViewModel
     public double Alpha
     {
         get => _alpha;
-        set => Set(ref _alpha, value);
+        set => SetProperty(ref _alpha, value);
     }
 
     public double Beta
     {
         get => _beta;
-        set => Set(ref _beta, value);
+        set => SetProperty(ref _beta, value);
     }
 
     public int Partitions
     {
         get => _partitions;
-        set => Set(ref _partitions, value);
+        set => SetProperty(ref _partitions, value);
     }
 
     public PlotModel Graphic
     {
         get => _graphic;
-        set => Set(ref _graphic, value);
+        set => SetProperty(ref _graphic, value);
     }
 
     public PointListingViewModel PointListingViewModel { get; }
@@ -58,17 +58,17 @@ public class MainViewModel : ViewModel
 
         #region Commands
 
-        BuildSpline = new LambdaCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
-        DrawPoints = new LambdaCommand(OnDrawPointsCommandExecuted, CanDrawPointsCommandExecute);
-        ClearPlane = new LambdaCommand(OnClearCommandExecuted, CanClearCommandExecute);
+        BuildSpline = new RelayCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
+        DrawPoints = new RelayCommand(OnDrawPointsCommandExecuted);
+        ClearPlane = new RelayCommand(OnClearCommandExecuted);
 
         #endregion
     }
 
-    private bool CanBuildSplineCommandExecute(object parameter)
+    private bool CanBuildSplineCommandExecute()
         => PointListingViewModel.Points.Count() >= 4;
 
-    private void OnBuildSplineCommandExecuted(object parameter)
+    private void OnBuildSplineCommandExecuted()
     {
         Spline spline = Spline.CreateBuilder().SetParameters((_alpha, _beta)).SetPartitions(_partitions)
             .SetPoints(PointListingViewModel.Points.Select(p => new Point(p.X, p.Value)).ToArray());
@@ -95,11 +95,9 @@ public class MainViewModel : ViewModel
         _graphic.InvalidatePlot(true);
     }
 
-    private bool CanDrawPointsCommandExecute(object parameter) => true;
-
-    private void OnDrawPointsCommandExecuted(object parameter)
+    private void OnDrawPointsCommandExecuted()
     {
-        var series = new ScatterSeries()
+        var series = new ScatterSeries
         {
             MarkerType = MarkerType.Circle,
             MarkerSize = 3.0,
@@ -112,9 +110,7 @@ public class MainViewModel : ViewModel
         _graphic.InvalidatePlot(true);
     }
 
-    private bool CanClearCommandExecute(object parameter) => true;
-
-    private void OnClearCommandExecuted(object parameter)
+    private void OnClearCommandExecuted()
     {
         _graphic.Series.Clear();
         _graphic.InvalidatePlot(true);

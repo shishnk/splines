@@ -1,6 +1,6 @@
 namespace Splines.ViewsModels;
 
-public class PointListingViewModel : ViewModel
+public class PointListingViewModel : ObservableObject
 {
     private readonly ObservableCollection<PointWrapper> _points;
     public IEnumerable<PointWrapper> Points => _points;
@@ -13,23 +13,17 @@ public class PointListingViewModel : ViewModel
 
         #region Commands
 
-        InsertPoint = new LambdaCommand(OnInsertPointCommandExecuted, CanInsertPointCommandExecute);
-        DeletePoint = new LambdaCommand(OnDeletePointCommandExecuted, CanDeletePointCommandExecute);
+        InsertPoint = new RelayCommand(OnInsertPointCommandExecuted);
+        DeletePoint = new RelayCommand<PointWrapper>(OnDeletePointCommandExecuted!, CanDeletePointCommandExecute!);
 
         #endregion
     }
 
-    private bool CanInsertPointCommandExecute(object parameter) => true;
+    private void OnInsertPointCommandExecuted()
+        => _points.Add(new(new(0.0, 0.0)));
 
-    private void OnInsertPointCommandExecuted(object parameter) => _points.Add(new(new(0.0, 0.0)));
+    private bool CanDeletePointCommandExecute(PointWrapper point)
+        => _points.Count > 1;
 
-    private bool CanDeletePointCommandExecute(object parameter)
-        => _points.Count > 1 && parameter is PointWrapper;
-
-    private void OnDeletePointCommandExecuted(object parameter)
-    {
-        if (parameter is not PointWrapper point) return;
-
-        _points.Remove(point);
-    }
+    private void OnDeletePointCommandExecuted(PointWrapper point) => _points.Remove(point);
 }

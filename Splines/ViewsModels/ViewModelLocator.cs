@@ -2,5 +2,5 @@
 
 public class ViewModelLocator
 {
-    public MainViewModel MainViewModel => App.Services.GetRequiredService<MainViewModel>();
+    public MainViewModel MainViewModel => App.Current.Services.GetRequiredService<MainViewModel>();
 }

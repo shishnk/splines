@@ -5,25 +5,31 @@
 /// </summary>
 public partial class App
 {
-    private static IHost? _host;
-    public static IHost Host => _host ??= Program.CreateHostBuilder(Environment.GetCommandLineArgs()).Build();
-    public static IServiceProvider Services => Host.Services;
+    /// <summary>
+    /// Gets the current <see cref="App"/> instance in use
+    /// </summary>
+    public new static App Current => (App)Application.Current;
 
-    public static void ConfigureServices(IServiceCollection services)
-        => services.AddViewModelsAndServices();
+    /// <summary>
+    /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
+    /// </summary>
+    public IServiceProvider Services { get; }
 
-    protected override async void OnStartup(StartupEventArgs e)
+    /// <summary>
+    /// Configures the services for the application.
+    /// </summary>
+    private static IServiceProvider ConfigureServices()
     {
-        var host = Host;
+        var services = new ServiceCollection();
+        
+        services.AddTransient<MainViewModel>();
 
-        base.OnStartup(e);
-        await host.StartAsync();
+        return services.BuildServiceProvider();
     }
 
-    protected override async void OnExit(ExitEventArgs e)
+    public App()
     {
-        base.OnExit(e);
-
-        using (Host) await Host.StopAsync();
+        Services = ConfigureServices();
+        InitializeComponent();
     }
 }

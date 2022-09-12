@@ -1,6 +1,6 @@
 namespace Splines.Models.Spline;
 
-public struct Point
+public class Point
 {
     public double X { get; set; }
     public double Value { get; set; }

@@ -7,38 +7,36 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
 		<EnablePreviewFeatures>true</EnablePreviewFeatures>
-		<StartupObject>Splines.Program</StartupObject>
+		<StartupObject></StartupObject>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<Folder Include="Models\Spline\" />
 		<Using Include="System.Windows.Input" />
-		<Using Include="Splines.Infrastructure.Commands.Base" />
 		<Using Include="System.ComponentModel" />
 		<Using Include="System.Runtime.CompilerServices" />
-		<Using Include="Splines.ViewsModels.Base" />
 		<Using Include="System.Collections.Immutable" />
 		<Using Include="Newtonsoft.Json" />
 		<Using Include="System.IO" />
 		<Using Include="Microsoft.Extensions.DependencyInjection" />
 		<Using Include="Splines.ViewsModels" />
-		<Using Include="Microsoft.Extensions.Hosting" />
 		<Using Include="System.Windows" />
-		<Using Include="Splines.Services" />
 		<Using Include="Splines.Models.Spline" />
 		<Using Include="System.Collections.ObjectModel" />
-		<Using Include="Splines.Infrastructure.Commands" />
 		<Using Include="System.Windows.Controls" />
 		<Using Include="System.Windows.Data" />
 		<Using Include="System.Globalization" />
 		<Using Include="OxyPlot" />
 		<Using Include="OxyPlot.Axes" />
 		<Using Include="OxyPlot.Series" />
+		<Using Include="Microsoft.Toolkit.Mvvm.ComponentModel" />
+		<Using Include="Microsoft.Toolkit.Mvvm.Input" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0-preview.7.22375.6" />
+		<PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="OxyPlot.Wpf" Version="2.1.0" />
 		<PackageReference Include="System.Runtime.Experimental" Version="6.0.2" />
