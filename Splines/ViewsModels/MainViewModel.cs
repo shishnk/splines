@@ -6,6 +6,9 @@ public class MainViewModel : ObservableObject
     private double _alpha = 1E-07;
     private double _beta = 1E-07;
     private int _partitions = 1;
+    private ICommand? _buildSpline;
+    private ICommand? _drawPointsCommand;
+    private ICommand? _clearPlaneCommand;
 
     public double Alpha
     {
@@ -32,9 +35,13 @@ public class MainViewModel : ObservableObject
     }
 
     public PointListingViewModel PointListingViewModel { get; }
-    public ICommand BuildSpline { get; }
-    public ICommand DrawPoints { get; }
-    public ICommand ClearPlane { get; }
+
+    public ICommand BuildSplineCommand =>
+        _buildSpline ??= new LambdaCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
+
+    public ICommand DrawPointsCommand => _drawPointsCommand ??= new LambdaCommand(OnDrawPointsCommandExecuted);
+
+    public ICommand ClearPlaneCommand => _clearPlaneCommand ??= new LambdaCommand(OnClearPlaneCommandExecuted);
 
     public MainViewModel()
     {
@@ -55,14 +62,6 @@ public class MainViewModel : ObservableObject
             Position = AxisPosition.Left, MinorTickSize = 0, MajorGridlineStyle = LineStyle.Solid,
             MinorGridlineStyle = LineStyle.Solid, Minimum = -50, Maximum = 50
         });
-
-        #region Commands
-
-        BuildSpline = new RelayCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
-        DrawPoints = new RelayCommand(OnDrawPointsCommandExecuted);
-        ClearPlane = new RelayCommand(OnClearCommandExecuted);
-
-        #endregion
     }
 
     private bool CanBuildSplineCommandExecute()
@@ -110,7 +109,7 @@ public class MainViewModel : ObservableObject
         _graphic.InvalidatePlot(true);
     }
 
-    private void OnClearCommandExecuted()
+    private void OnClearPlaneCommandExecuted()
     {
         _graphic.Series.Clear();
         _graphic.InvalidatePlot(true);

@@ -21,8 +21,9 @@ public partial class App
     private static IServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();
-        
-        services.AddTransient<MainViewModel>();
+
+        services.AddSingleton<MainViewModel>();
+        services.AddTransient<PointListingViewModel>();
 
         return services.BuildServiceProvider();
     }
