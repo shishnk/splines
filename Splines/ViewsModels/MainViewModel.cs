@@ -43,9 +43,9 @@ public class MainViewModel : ObservableObject
 
     public ICommand ClearPlaneCommand => _clearPlaneCommand ??= new LambdaCommand(OnClearPlaneCommandExecuted);
 
-    public MainViewModel()
+    public MainViewModel(PointListingViewModel pointListingViewModel)
     {
-        PointListingViewModel = new();
+        PointListingViewModel = pointListingViewModel;
         _graphic = new()
         {
             PlotType = PlotType.XY,
