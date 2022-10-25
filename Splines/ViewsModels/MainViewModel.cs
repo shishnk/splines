@@ -3,6 +3,7 @@
 public class MainViewModel : ObservableObject
 {
     private PlotModel _graphic;
+    private Spline _spline;
     private double _alpha = 1E-07;
     private double _beta = 1E-07;
     private int _partitions = 1;
@@ -46,6 +47,7 @@ public class MainViewModel : ObservableObject
     public MainViewModel(PointListingViewModel pointListingViewModel)
     {
         PointListingViewModel = pointListingViewModel;
+        _spline = new();
         _graphic = new()
         {
             PlotType = PlotType.XY,
@@ -69,9 +71,11 @@ public class MainViewModel : ObservableObject
 
     private void OnBuildSplineCommandExecuted()
     {
-        Spline spline = Spline.CreateBuilder().SetParameters((_alpha, _beta)).SetPartitions(_partitions)
-            .SetPoints(PointListingViewModel.Points.Select(p => new Point(p.X, p.Value)).ToArray());
-        spline.Compute();
+        _spline.Parameters = (_alpha, _beta);
+        _spline.Partitions = _partitions;
+        _spline.Points = PointListingViewModel.Points.Select(p => new Point(p.X, p.Value)).ToArray();
+
+        _spline.Compute();
         _graphic.Series.Clear();
 
         var scatterSeries = new ScatterSeries()
@@ -88,7 +92,7 @@ public class MainViewModel : ObservableObject
         _graphic.Axes[1].Maximum = PointListingViewModel.Points.MaxBy(p => p.Value)!.Value + 15.0;
 
         scatterSeries.Points.AddRange(PointListingViewModel.Points.Select(p => new ScatterPoint(p.X, p.Value)));
-        lineSeries.Points.AddRange(spline.Result.Select(p => new DataPoint(p.X, p.Value)));
+        lineSeries.Points.AddRange(_spline.Result.Select(p => new DataPoint(p.X, p.Value)));
         _graphic.Series.Add(scatterSeries);
         _graphic.Series.Add(lineSeries);
         _graphic.InvalidatePlot(true);
