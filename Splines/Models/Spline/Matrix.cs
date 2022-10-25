@@ -17,7 +17,7 @@ public class Matrix
         _storage = new double[size, size];
     }
 
-    public void PrintDense(string path)
+    public void PrintAsDense(string path)
     {
         using var sw = new StreamWriter(path);
 
