@@ -7,7 +7,7 @@ internal class LambdaCommand : Command
 
     public LambdaCommand(Action execute, Func<bool>? canExecute = null)
         : this(
-            execute: p => execute(),
+            execute: _ => execute(),
             canExecute: canExecute is null ? null : _ => canExecute())
     {
     }

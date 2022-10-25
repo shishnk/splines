@@ -18,5 +18,8 @@ public class PointWrapper : ObservableObject
         set => SetProperty(_point.Value, value, _point, (point, fx) => point.Value = fx);
     }
 
+    public ICommand? DeletePointCommand { get; init; }
+    public ICommand? InsertPointCommand { get; init; }
+
     public PointWrapper(Point point) => _point = point;
 }

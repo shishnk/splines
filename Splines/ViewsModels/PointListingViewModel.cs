@@ -7,16 +7,26 @@ public class PointListingViewModel : ObservableObject
     private ICommand? _insertPointCommand;
     public IEnumerable<PointWrapper> Points => _points;
 
-    public ICommand DeletePoint => _deletePointCommand ??=
+    public ICommand DeletePointCommand => _deletePointCommand ??=
         new LambdaCommand(OnDeletePointCommandExecuted, _ => CanDeletePointCommandExecute());
 
-    public ICommand InsertPoint => _insertPointCommand ??=
+    public ICommand InsertPointCommand => _insertPointCommand ??=
         new LambdaCommand(OnInsertPointCommandExecuted);
 
-    public PointListingViewModel()
-        => _points = new() { new(new(0.0, 0.0)) };
+    public PointListingViewModel() => _points = new()
+    {
+        new(new(0.0, 0.0))
+        {
+            DeletePointCommand = DeletePointCommand,
+            InsertPointCommand = InsertPointCommand
+        }
+    };
 
-    private void OnInsertPointCommandExecuted() => _points.Add(new(new(0.0, 0.0)));
+    private void OnInsertPointCommandExecuted() => _points.Add(new(new(0.0, 0.0))
+    {
+        DeletePointCommand = DeletePointCommand,
+        InsertPointCommand = InsertPointCommand
+    });
 
     private bool CanDeletePointCommandExecute() => _points.Count > 1;
 

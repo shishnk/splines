@@ -6,6 +6,7 @@
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:oxy="http://oxyplot.org/wpf"
     xmlns:converters="clr-namespace:Splines.Infrastructure.Converters"
+    xmlns:viewsModels="clr-namespace:Splines.ViewsModels"
     Title="Splines"
     Width="1200" Height="760"
     DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
@@ -39,14 +40,16 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0, 5, 0 , 0" HorizontalAlignment="Center">
-                                <Label Content="Alpha" VerticalContentAlignment="Center"/>
+                            <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0, 5, 0 , 0"
+                                        HorizontalAlignment="Center">
+                                <Label Content="Alpha" VerticalContentAlignment="Center" />
                                 <TextBox
                                     Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Alpha, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0, 5, 0, 0 " HorizontalAlignment="Left">
-                                <Label Content="Beta" VerticalContentAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0, 5, 0, 0 "
+                                        HorizontalAlignment="Left">
+                                <Label Content="Beta" VerticalContentAlignment="Center" />
                                 <TextBox
                                     Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Beta, UpdateSourceTrigger=LostFocus}" />
@@ -61,16 +64,16 @@
                             ItemsSource="{Binding PointListingViewModel.Points}"
                             SelectionMode="Single">
                             <DataGrid.Resources>
-                                <DataTemplate x:Key="Delete">
+                                <DataTemplate x:Key="Delete" DataType="{x:Type viewsModels:PointWrapper}">
                                     <Button
-                                        Command="{Binding DataContext.PointListingViewModel.DeletePoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                        Command="{Binding DeletePointCommand}"
                                         CommandParameter="{Binding}"
-                                        Content="X" Background="LightCoral"/>
+                                        Content="X" Background="LightCoral" />
                                 </DataTemplate>
-                                <DataTemplate x:Key="Insert">
+                                <DataTemplate x:Key="Insert" DataType="{x:Type viewsModels:PointWrapper}">
                                     <Button
-                                        Command="{Binding DataContext.PointListingViewModel.InsertPoint, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                        Content="+" Background="LightGreen"/>
+                                        Command="{Binding InsertPointCommand}"
+                                        Content="+" Background="LightGreen" />
                                 </DataTemplate>
                             </DataGrid.Resources>
                             <DataGrid.Columns>
@@ -95,13 +98,13 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height=".7*"/>
+                                <RowDefinition Height=".7*" />
                                 <RowDefinition />
                             </Grid.RowDefinitions>
                             <CheckBox Name="AdvancedSettings" IsChecked="False" Content="Advanced" Grid.ColumnSpan="2" />
                             <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal"
                                         Visibility="{Binding IsChecked,ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Label Content="Partitions" ToolTip="Set the number of finite elements"/>
+                                <Label Content="Partitions" ToolTip="Set the number of finite elements" />
                                 <TextBox
                                     Width="20" Height="17" Margin="0,0,0,23" Padding="0, 0,3, 0"
                                     HorizontalContentAlignment="Center"
@@ -111,8 +114,9 @@
                                         Visibility="{Binding IsChecked, ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Button fa5:Awesome.Content="Solid_PaintBrush" Width="60" HorizontalAlignment="Right"
                                         Command="{Binding DrawPointsCommand}"
-                                        ToolTip="Draw the points" Background="Lavender" Height="17" Margin="0, 0, 0, 7"/>
-                                <Button fa5:Awesome.Content="Solid_Eraser" ToolTip="Clear the plane" Width="60" HorizontalAlignment="Right"
+                                        ToolTip="Draw the points" Background="Lavender" Height="17" Margin="0, 0, 0, 7" />
+                                <Button fa5:Awesome.Content="Solid_Eraser" ToolTip="Clear the plane" Width="60"
+                                        HorizontalAlignment="Right"
                                         Height="17"
                                         Background="Plum" Command="{Binding ClearPlaneCommand}" />
                             </StackPanel>
@@ -121,7 +125,8 @@
                                     Width="60" Height="17" Content="{StaticResource ButtonImage}"
                                     Style="{StaticResource ButtonDisabledStyle}"
                                     Command="{Binding BuildSplineCommand}"
-                                    ToolTipService.ShowOnDisabled="True" HorizontalAlignment="Right" Background="LightGreen">
+                                    ToolTipService.ShowOnDisabled="True" HorizontalAlignment="Right"
+                                    Background="LightGreen">
                                 </Button>
                             </StackPanel>
                         </Grid>
