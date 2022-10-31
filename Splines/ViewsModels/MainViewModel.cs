@@ -1,48 +1,48 @@
-﻿namespace Splines.ViewsModels;
+﻿using System.Reactive;
+using System.Reactive.Linq;
+using ReactiveUI;
 
-public class MainViewModel : ObservableObject
+namespace Splines.ViewsModels;
+
+public class MainViewModel : ReactiveObject
 {
     private PlotModel _graphic;
-    private Spline _spline;
-    private double _alpha = 1E-07;
+    private readonly Spline _spline;
+    private double _alpha = 1E-16;
     private double _beta = 1E-07;
     private int _partitions = 1;
-    private ICommand? _buildSpline;
-    private ICommand? _drawPointsCommand;
-    private ICommand? _clearPlaneCommand;
 
     public double Alpha
     {
         get => _alpha;
-        set => SetProperty(ref _alpha, value);
+        set => this.RaiseAndSetIfChanged(ref _alpha, value);
     }
 
     public double Beta
     {
         get => _beta;
-        set => SetProperty(ref _beta, value);
+        set => this.RaiseAndSetIfChanged(ref _beta, value);
     }
 
     public int Partitions
     {
         get => _partitions;
-        set => SetProperty(ref _partitions, value);
+        set => this.RaiseAndSetIfChanged(ref _partitions, value);
     }
 
     public PlotModel Graphic
     {
         get => _graphic;
-        set => SetProperty(ref _graphic, value);
+        set => this.RaiseAndSetIfChanged(ref _graphic, value);
     }
 
     public PointListingViewModel PointListingViewModel { get; }
 
-    public ICommand BuildSplineCommand =>
-        _buildSpline ??= new LambdaCommand(OnBuildSplineCommandExecuted, CanBuildSplineCommandExecute);
+    public ReactiveCommand<Unit, Unit> BuildSplineCommand { get; }
 
-    public ICommand DrawPointsCommand => _drawPointsCommand ??= new LambdaCommand(OnDrawPointsCommandExecuted);
+    public ReactiveCommand<Unit, Unit> DrawPointsCommand { get; }
 
-    public ICommand ClearPlaneCommand => _clearPlaneCommand ??= new LambdaCommand(OnClearPlaneCommandExecuted);
+    public ReactiveCommand<Unit, Unit> ClearPlaneCommand { get; }
 
     public MainViewModel(PointListingViewModel pointListingViewModel)
     {
@@ -64,10 +64,18 @@ public class MainViewModel : ObservableObject
             Position = AxisPosition.Left, MinorTickSize = 0, MajorGridlineStyle = LineStyle.Solid,
             MinorGridlineStyle = LineStyle.Solid, Minimum = -50, Maximum = 50
         });
-    }
 
-    private bool CanBuildSplineCommandExecute()
-        => PointListingViewModel.Points.Count() >= 4;
+        #region Commands
+
+        var canExecute = this.WhenAnyValue(x => x.PointListingViewModel.Points, points => points.Count() >= 4);
+
+        DrawPointsCommand = ReactiveCommand.Create(OnDrawPointsCommandExecuted);
+        ClearPlaneCommand = ReactiveCommand.Create(OnClearPlaneCommandExecuted);
+        BuildSplineCommand = ReactiveCommand.Create(OnBuildSplineCommandExecuted,
+            canExecute);
+
+        #endregion
+    }
 
     private void OnBuildSplineCommandExecuted()
     {
@@ -78,7 +86,7 @@ public class MainViewModel : ObservableObject
         _spline.Compute();
         _graphic.Series.Clear();
 
-        var scatterSeries = new ScatterSeries()
+        var scatterSeries = new ScatterSeries
         {
             MarkerType = MarkerType.Circle,
             MarkerSize = 3.0,
