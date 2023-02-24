@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace SplinesConsoleVersion;
 
 public class Vector<T> where T : INumber<T>
@@ -35,7 +37,7 @@ public class Vector<T> where T : INumber<T>
 
         for (int i = 0; i < vector.Length; i++)
         {
-            result[i] = vector[i] * T.Create(constant);
+            result[i] = vector[i] * T.CreateChecked(constant);
         }
 
         return result;

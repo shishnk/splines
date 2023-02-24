@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Splines.Models.Spline;
 
 public static class SLAE
@@ -13,9 +15,9 @@ public static class SLAE
             T sum = T.Zero;
 
             for (int k = 0; k < i; k++)
-                sum += T.Create(matrix[i, k]) * x[k];
+                sum += T.CreateChecked(matrix[i, k]) * x[k];
 
-            x[i] = (f[i] - sum) / T.Create(matrix[i, i]);
+            x[i] = (f[i] - sum) / T.CreateChecked(matrix[i, i]);
         }
 
         for (int i = x.Length - 1; i >= 0; i--)
@@ -24,7 +26,7 @@ public static class SLAE
 
             for (int k = i + 1; k < x.Length; k++)
             {
-                sum += T.Create(matrix[i, k]) * x[k];
+                sum += T.CreateChecked(matrix[i, k]) * x[k];
             }
 
             x[i] -= sum;
