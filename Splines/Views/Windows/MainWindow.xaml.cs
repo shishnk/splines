@@ -11,8 +11,6 @@ public partial class MainWindow : IViewFor<MainViewModel>
     {
         InitializeComponent();
         ViewModel = App.Current.Services.GetRequiredService<MainViewModel>();
-        this.WhenAnyValue(x => x.ViewModel.Alpha)
-            .BindTo(this, view => view.Box.Text);
     }
 
     object? IViewFor.ViewModel

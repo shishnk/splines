@@ -43,15 +43,15 @@
                             <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="0, 5, 0 , 0"
                                         HorizontalAlignment="Center">
                                 <Label Content="Alpha" VerticalContentAlignment="Center" />
-                                <TextBox x:Name="Box"
-                                    Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
-                                     />
+                                <TextBox Text="{Binding Alpha}"
+                                         MinWidth="47" MinHeight="25" Margin="0, 0, 0, 2"
+                                         VerticalContentAlignment="Center" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0, 5, 0, 0 "
                                         HorizontalAlignment="Left">
                                 <Label Content="Beta" VerticalContentAlignment="Center" />
                                 <TextBox
-                                    Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
+                                    MinWidth="47" MinHeight="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Beta, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
                         </Grid>
@@ -66,13 +66,14 @@
                             <DataGrid.Resources>
                                 <DataTemplate x:Key="Delete" DataType="{x:Type viewsModels:PointWrapper}">
                                     <Button
-                                        Command="{Binding DeletePointCommand}"
-                                        CommandParameter="{Binding}"
+                                        Command="{Binding DeletePoint}"
+                                        CommandParameter="{Binding X}"
                                         Content="X" Background="LightCoral" />
                                 </DataTemplate>
                                 <DataTemplate x:Key="Insert" DataType="{x:Type viewsModels:PointWrapper}">
                                     <Button
-                                        Command="{Binding InsertPointCommand}"
+                                        Command="{Binding InsertPoint}"
+                                        CommandParameter="{Binding X}"
                                         Content="+" Background="LightGreen" />
                                 </DataTemplate>
                             </DataGrid.Resources>
@@ -113,18 +114,18 @@
                             <StackPanel Grid.Row="1" Grid.Column="1"
                                         Visibility="{Binding IsChecked, ElementName=AdvancedSettings, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Button fa5:Awesome.Content="Solid_PaintBrush" Width="60" HorizontalAlignment="Right"
-                                        Command="{Binding DrawPointsCommand}"
+                                        Command="{Binding DrawPoints}"
                                         ToolTip="Draw the points" Background="Lavender" Height="17" Margin="0, 0, 0, 7" />
                                 <Button fa5:Awesome.Content="Solid_Eraser" ToolTip="Clear the plane" Width="60"
                                         HorizontalAlignment="Right"
                                         Height="17"
-                                        Background="Plum" Command="{Binding ClearPlaneCommand}" />
+                                        Background="Plum" Command="{Binding ClearPlane}" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Grid.Row="0">
                                 <Button
                                     Width="60" Height="17" Content="{StaticResource ButtonImage}"
                                     Style="{StaticResource ButtonDisabledStyle}"
-                                    Command="{Binding BuildSplineCommand}"
+                                    Command="{Binding BuildSpline}"
                                     ToolTipService.ShowOnDisabled="True" HorizontalAlignment="Right"
                                     Background="LightGreen">
                                 </Button>

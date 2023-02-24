@@ -1,25 +1,27 @@
 global using Point = Splines.Models.Spline.Point;
+using System.Reactive;
+using ReactiveUI;
 
 namespace Splines.ViewsModels;
 
-public class PointWrapper : ObservableObject
+public class PointWrapper : ReactiveObject
 {
     private readonly Point _point;
 
     public double X
     {
         get => _point.X;
-        set => SetProperty(_point.X, value, _point, (point, x) => point.X = x);
+        set => _point.X = value;
     }
 
     public double Value
     {
         get => _point.Value;
-        set => SetProperty(_point.Value, value, _point, (point, fx) => point.Value = fx);
+        set => _point.Value = value;
     }
 
-    public ICommand? DeletePointCommand { get; init; }
-    public ICommand? InsertPointCommand { get; init; }
+    public ReactiveCommand<double, Unit>? DeletePoint { get; init; }
+    public ReactiveCommand<double, Unit>? InsertPoint { get; init; }
 
     public PointWrapper(Point point) => _point = point;
 }

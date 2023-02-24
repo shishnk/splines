@@ -8,7 +8,7 @@ public class MainViewModel : ReactiveObject
 {
     private PlotModel _graphic;
     private readonly Spline _spline;
-    private double _alpha = 1E-16;
+    private double _alpha = 1E-07;
     private double _beta = 1E-07;
     private int _partitions = 1;
 
@@ -38,11 +38,11 @@ public class MainViewModel : ReactiveObject
 
     public PointListingViewModel PointListingViewModel { get; }
 
-    public ReactiveCommand<Unit, Unit> BuildSplineCommand { get; }
+    public ReactiveCommand<Unit, Unit> BuildSpline { get; }
 
-    public ReactiveCommand<Unit, Unit> DrawPointsCommand { get; }
+    public ReactiveCommand<Unit, Unit> DrawPoints { get; }
 
-    public ReactiveCommand<Unit, Unit> ClearPlaneCommand { get; }
+    public ReactiveCommand<Unit, Unit> ClearPlane { get; }
 
     public MainViewModel(PointListingViewModel pointListingViewModel)
     {
@@ -65,19 +65,35 @@ public class MainViewModel : ReactiveObject
             MinorGridlineStyle = LineStyle.Solid, Minimum = -50, Maximum = 50
         });
 
-        #region Commands
+        #region Commands and subscriptions
 
-        var canExecute = this.WhenAnyValue(x => x.PointListingViewModel.Points, points => points.Count() >= 4);
+        DrawPoints = ReactiveCommand.Create<Unit>(_ =>
+        {
+            var series = new ScatterSeries
+            {
+                MarkerType = MarkerType.Circle,
+                MarkerSize = 3.0,
+                MarkerFill = OxyColors.Black
+            };
 
-        DrawPointsCommand = ReactiveCommand.Create(OnDrawPointsCommandExecuted);
-        ClearPlaneCommand = ReactiveCommand.Create(OnClearPlaneCommandExecuted);
-        BuildSplineCommand = ReactiveCommand.Create(OnBuildSplineCommandExecuted,
-            canExecute);
+            series.Points.AddRange
+                (PointListingViewModel.Points.Select(p => new ScatterPoint(p.X, p.Value)));
+            _graphic.Series.Clear();
+            _graphic.Series.Add(series);
+            _graphic.InvalidatePlot(true);
+        });
+        ClearPlane = ReactiveCommand.Create<Unit>(_ =>
+        {
+            _graphic.Series.Clear();
+            _graphic.InvalidatePlot(true);
+        });
+        var canExecute = PointListingViewModel.PointsAsSourceCache.CountChanged.Select(c => c >= 4);
+        BuildSpline = ReactiveCommand.Create(BuildSplineImpl, canExecute);
 
         #endregion
     }
 
-    private void OnBuildSplineCommandExecuted()
+    private void BuildSplineImpl()
     {
         _spline.Parameters = (_alpha, _beta);
         _spline.Partitions = _partitions;
@@ -103,27 +119,6 @@ public class MainViewModel : ReactiveObject
         lineSeries.Points.AddRange(_spline.Result.Select(p => new DataPoint(p.X, p.Value)));
         _graphic.Series.Add(scatterSeries);
         _graphic.Series.Add(lineSeries);
-        _graphic.InvalidatePlot(true);
-    }
-
-    private void OnDrawPointsCommandExecuted()
-    {
-        var series = new ScatterSeries
-        {
-            MarkerType = MarkerType.Circle,
-            MarkerSize = 3.0,
-            MarkerFill = OxyColors.Black
-        };
-
-        series.Points.AddRange(PointListingViewModel.Points.Select(p => new ScatterPoint(p.X, p.Value)));
-        _graphic.Series.Clear();
-        _graphic.Series.Add(series);
-        _graphic.InvalidatePlot(true);
-    }
-
-    private void OnClearPlaneCommandExecuted()
-    {
-        _graphic.Series.Clear();
         _graphic.InvalidatePlot(true);
     }
 }

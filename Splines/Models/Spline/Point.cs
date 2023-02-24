@@ -16,7 +16,7 @@ public class Point
         {
             if (!File.Exists(jsonPath))
             {
-                throw new Exception("File does not exist");
+                throw new("File does not exist");
             }
 
             using var sr = new StreamReader(jsonPath);
