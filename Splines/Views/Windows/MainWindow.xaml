@@ -44,14 +44,14 @@
                                         HorizontalAlignment="Center">
                                 <Label Content="Alpha" VerticalContentAlignment="Center" />
                                 <TextBox
-                                    Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
+                                    MinWidth="47" MinHeight="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Alpha, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0, 5, 0, 0 "
                                         HorizontalAlignment="Left">
                                 <Label Content="Beta" VerticalContentAlignment="Center" />
                                 <TextBox
-                                    Width="47" Height="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
+                                    MinWidth="47" MinHeight="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
                                     Text="{Binding Beta, UpdateSourceTrigger=LostFocus}" />
                             </StackPanel>
                         </Grid>
