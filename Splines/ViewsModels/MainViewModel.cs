@@ -37,11 +37,8 @@ public class MainViewModel : ReactiveObject
     }
 
     public PointListingViewModel PointListingViewModel { get; }
-
     public ReactiveCommand<Unit, Unit> BuildSpline { get; }
-
     public ReactiveCommand<Unit, Unit> DrawPoints { get; }
-
     public ReactiveCommand<Unit, Unit> ClearPlane { get; }
 
     public MainViewModel(PointListingViewModel pointListingViewModel)

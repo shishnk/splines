@@ -25,8 +25,7 @@ public class PointListingViewModel : ReactiveObject
             DeletePoint = DeletePoint,
             InsertPoint = InsertPoint
         });
-
-        PointsAsSourceCache.Connect().Bind(out _points).Subscribe();
+        PointsAsSourceCache.Connect().SortBy(p => p.X).Bind(out _points).Subscribe();
     }
 
     private void InsertPointImpl(double parameter)
