@@ -11,13 +11,21 @@ public class PointWrapper : ReactiveObject
     public double X
     {
         get => _point.X;
-        set => _point.X = value;
+        set
+        {
+            _point.X = value;
+            this.RaisePropertyChanged();
+        }
     }
 
     public double Value
     {
         get => _point.Value;
-        set => _point.Value = value;
+        set
+        {
+            _point.Value = value;
+            this.RaisePropertyChanged();
+        }
     }
 
     public ReactiveCommand<double, Unit>? DeletePoint { get; init; }
