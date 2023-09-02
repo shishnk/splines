@@ -52,7 +52,7 @@
                                 <Label Content="Beta" VerticalContentAlignment="Center" />
                                 <TextBox
                                     MinWidth="47" MinHeight="25" Margin="0, 0, 0, 2" VerticalContentAlignment="Center"
-                                    Text="{Binding Beta, UpdateSourceTrigger=LostFocus}" />
+                                    Text="{Binding Beta}" />
                             </StackPanel>
                         </Grid>
                     </GroupBox>
@@ -62,6 +62,7 @@
                             CanUserResizeRows="False"
                             CanUserSortColumns="False"
                             ItemsSource="{Binding PointListingViewModel.Points}"
+                            SelectedItem="{Binding PointListingViewModel.SelectedPoint}"
                             SelectionMode="Single">
                             <DataGrid.Resources>
                                 <DataTemplate x:Key="Delete" DataType="{x:Type viewsModels:PointWrapper}">
@@ -80,11 +81,11 @@
                             <DataGrid.Columns>
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding X, UpdateSourceTrigger=LostFocus}"
-                                    Header="X" />
+                                    Binding="{Binding X, UpdateSourceTrigger=PropertyChanged}"
+                                    Header="X"/>
                                 <DataGridTextColumn
                                     Width="*"
-                                    Binding="{Binding Value, UpdateSourceTrigger=LostFocus}"
+                                    Binding="{Binding Value, UpdateSourceTrigger=PropertyChanged}"
                                     Header="F(X)" />
                                 <DataGridTemplateColumn CellTemplate="{StaticResource Insert}" Header=" " />
                                 <DataGridTemplateColumn CellTemplate="{StaticResource Delete}" Header=" " />
