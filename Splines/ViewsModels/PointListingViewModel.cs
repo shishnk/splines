@@ -26,7 +26,7 @@ public class PointListingViewModel : ReactiveObject
                     var pnt = updater.Lookup(_watch.Item1);
                     updater.RemoveKey(_watch.Item1);
                     updater.AddOrUpdate(pnt.Value);
-                    updater.RemoveKey(pnt.Value.X);
+                    updater.RemoveKey(parameter);
                 });
             },
             PointsAsSourceCache.CountChanged.Select(p => p > 1));
