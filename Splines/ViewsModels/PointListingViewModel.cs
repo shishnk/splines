@@ -19,7 +19,16 @@ public class PointListingViewModel : ReactiveObject
 
     public PointListingViewModel()
     {
-        DeletePoint = ReactiveCommand.Create<double>(parameter => PointsAsSourceCache.Remove(parameter),
+        DeletePoint = ReactiveCommand.Create<double>(parameter =>
+            {
+                PointsAsSourceCache.Edit(updater =>
+                {
+                    var pnt = updater.Lookup(_watch.Item1);
+                    updater.RemoveKey(_watch.Item1);
+                    updater.AddOrUpdate(pnt.Value);
+                    updater.RemoveKey(pnt.Value.X);
+                });
+            },
             PointsAsSourceCache.CountChanged.Select(p => p > 1));
         InsertPoint = ReactiveCommand.Create<double>(InsertPointImpl);
 
