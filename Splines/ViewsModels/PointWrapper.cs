@@ -4,32 +4,28 @@ using ReactiveUI;
 
 namespace Splines.ViewsModels;
 
-public class PointWrapper : ReactiveObject
+public class PointWrapper(Point point) : ReactiveObject
 {
-    private readonly Point _point;
-
     public double X
     {
-        get => _point.X;
+        get => point.X;
         set
         {
-            _point.X = value;
+            point.X = value;
             this.RaisePropertyChanged();
         }
     }
 
     public double Value
     {
-        get => _point.Value;
+        get => point.Value;
         set
         {
-            _point.Value = value;
+            point.Value = value;
             this.RaisePropertyChanged();
         }
     }
 
-    public ReactiveCommand<double, Unit>? DeletePoint { get; init; }
-    public ReactiveCommand<double, Unit>? InsertPoint { get; init; }
-
-    public PointWrapper(Point point) => _point = point;
+    public required ReactiveCommand<double, Unit>? DeletePoint { get; init; }
+    public required ReactiveCommand<double, Unit>? InsertPoint { get; init; }
 }

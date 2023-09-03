@@ -19,5 +19,5 @@ public partial class MainWindow : IViewFor<MainViewModel>
         set => throw new NotImplementedException();
     }
 
-    public MainViewModel ViewModel { get; set; }
+    public MainViewModel? ViewModel { get; set; }
 }

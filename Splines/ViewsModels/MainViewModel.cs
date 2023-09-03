@@ -107,10 +107,13 @@ public class MainViewModel : ReactiveObject
         };
         var lineSeries = new LineSeries();
 
-        _graphic.Axes[0].Minimum = PointListingViewModel.Points.MinBy(p => p.X)!.X - 15.0;
-        _graphic.Axes[0].Maximum = PointListingViewModel.Points.MaxBy(p => p.X)!.X + 15.0;
-        _graphic.Axes[1].Minimum = PointListingViewModel.Points.MinBy(p => p.Value)!.Value - 15.0;
-        _graphic.Axes[1].Maximum = PointListingViewModel.Points.MaxBy(p => p.Value)!.Value + 15.0;
+        const int xAxis = 0;
+        const int yAxis = 1;
+
+        _graphic.Axes[xAxis].Minimum = PointListingViewModel.Points.MinBy(p => p.X)!.X - 15.0;
+        _graphic.Axes[xAxis].Maximum = PointListingViewModel.Points.MaxBy(p => p.X)!.X + 15.0;
+        _graphic.Axes[yAxis].Minimum = PointListingViewModel.Points.MinBy(p => p.Value)!.Value - 15.0;
+        _graphic.Axes[yAxis].Maximum = PointListingViewModel.Points.MaxBy(p => p.Value)!.Value + 15.0;
 
         scatterSeries.Points.AddRange(PointListingViewModel.Points.Select(p => new ScatterPoint(p.X, p.Value)));
         lineSeries.Points.AddRange(_spline.Result.Select(p => new DataPoint(p.X, p.Value)));
